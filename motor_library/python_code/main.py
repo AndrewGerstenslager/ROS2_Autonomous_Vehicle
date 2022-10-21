@@ -14,3 +14,5 @@ print(write_read("rc",ser))
 
 print(write_read("YO",ser))
 
+for i in range(10):
+    print(write_read("rc",ser))

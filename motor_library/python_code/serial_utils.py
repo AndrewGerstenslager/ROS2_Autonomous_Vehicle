@@ -47,7 +47,7 @@ def wait_for_arduino(port : serial.Serial):
             print("Arduino is ready")
             return
 
-def write_read(data : str, port : serial.Serial, timeout : int = 1) -> str: 
+def write_read(data : str, port : serial.Serial, timeout : int = 0.25) -> str: 
     '''
         Writes to arduino and waits for a response.\n
         Returns a string with the appropriate response.\n
@@ -63,7 +63,14 @@ def write_read(data : str, port : serial.Serial, timeout : int = 1) -> str:
         resp = read_port_formatted(port)
     return resp
 
+def write_without_response(data : str, port : serial.Serial):
+    '''
+        Writes a string to the serial port without waiting for response
+    '''
+    if port is None: raise Exception("Port undefined")
+    port.write(data.encode('utf-8'))
 
 #this method will run only if this library is ran in python directly
 if __name__=="__main__":
+    print("RUNNING SERIAL UTILS")
     get_arduino_port()
