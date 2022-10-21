@@ -1,5 +1,4 @@
-from serial_utils import    (get_arduino_port, 
-                            read_port_formatted, 
+from serial_utils import    (get_arduino_port,  
                             wait_for_arduino, 
                             write_read)
 
