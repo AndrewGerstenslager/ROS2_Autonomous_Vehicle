@@ -24,6 +24,7 @@ to the Arduino by the way we check the port.description to contain "Arduino".
 
 ***NOTE: This library will only connect to one arduino at a time at the moment***
 
+***NOTE: Serial.setTimeout(10); is INCREDIBLY IMPORTANT. If not in setup(), the arduino will take 1 second each time it calls Serial.readString(); which is a huge delay. It usually takes 2ms otherwise to send and receive data***
 
 ## To use this library:
 
