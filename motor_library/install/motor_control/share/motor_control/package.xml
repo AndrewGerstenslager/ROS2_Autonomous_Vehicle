@@ -11,7 +11,7 @@
   </description>
   <maintainer email="andrew@todo.todo">andrew</maintainer>
   <license>
-    There is no lisence for this package at this time.
+    There is no license for this package at this time.
     This is free to use by anyone.
   </license>
   <exec_depend>rclpy</exec_depend>

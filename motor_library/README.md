@@ -35,11 +35,10 @@ to the Arduino by the way we check the port.description to contain "Arduino".
 
 1. Install arduino_main.ino or any similar file to the Arduino using the Arduino IDE
 
-***NOTE: If Serial1 is not recognized, make sure you have "Arduino Mega" selected as the target board type***
+    ***NOTE: If Serial1 is not recognized, make sure you have "Arduino Mega" selected as the target board type***
 
-2. Build the package using "colcon build" command in "/dokalman/motor_library" directory
+2. Build and source the package using ". build_and_source.sh" command in "/dokalman/motor_library" directory
 
-3. Run ". install/local_setup.bash" to source the package
 
 4. Run "ros2 pkg list | grep motor" to verify that motor_control comes up
 

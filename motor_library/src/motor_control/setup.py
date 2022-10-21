@@ -13,10 +13,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='andrew',
-    maintainer_email='andrew@todo.todo',
+    maintainer='Andrew Gerstenslager',
+    maintainer_email='gerstead@mail.uc.edu',
     description='TODO: Package description',
-    license='TODO: License declaration',
+    license='There is no license for this package at this time.',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
