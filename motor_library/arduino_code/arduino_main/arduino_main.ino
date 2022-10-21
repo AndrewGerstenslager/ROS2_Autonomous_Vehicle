@@ -8,7 +8,7 @@ int left_right_stick;
 int up_down_stick;
 int trainer_toggle;
 int controller_tolerance = 20;
-
+String temp = "";
 
 void calculate_speeds(){
   /*
@@ -129,6 +129,8 @@ void setup() {
   //Serial1.print("t,s1");
   //Serial1.print("d,s0");
   //Serial1.print("t,s0");
+
+  
 }
 
 void loop() {
@@ -137,7 +139,17 @@ void loop() {
   
   //String received_data = Serial.readString();
   //write_read(received_data, 1);
-  calculate_speeds();
-  Serial1.println("t,s" +  String(turn_calculated));
-  Serial1.println("d,s" + String(drive_calcualted));
+
+  temp = Serial.readString();
+
+  if (temp != ""){
+    Serial.println(temp);
+    temp = "";
+  }
+
+  
+  //calculate_speeds();
+  
+  //Serial1.println("t,s" + String(turn_calculated));
+  //Serial1.println("d,s" + String(drive_calcualted));
 }
