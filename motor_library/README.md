@@ -3,7 +3,7 @@
 ### This is the readme explaining the motor control library.
 
 
-### We have two sections, the python and the arduino section:
+### We have two sections, the Python and the Arduino section:
 
 ## PYTHON:
 The python section has a ROS2 node that communicates to and from the ROS2 network.
@@ -21,6 +21,7 @@ way before we start sending commands before the Arduino is fully initialized.
 
 The python library should be os-agnostic in terms of finding the serial port and connecting
 to the Arduino by the way we check the port.description to contain "Arduino". 
+
 ***NOTE: This library will only connect to one arduino at a time at the moment***
 
 
