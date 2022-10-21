@@ -28,6 +28,7 @@ to the Arduino by the way we check the port.description to contain "Arduino".
 ## To use this library:
 
 Install arduino_main.ino to the Arduino using the Arduino IDE
+
 ***NOTE: If Serial1 is not recognized, make sure you have Arduino mega selected as the target board type***
 
 Run the python code from a computer connected via USB to the Arduino
