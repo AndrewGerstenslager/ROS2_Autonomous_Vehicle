@@ -1,6 +1,6 @@
 import serial
 import serial.tools.list_ports
-
+import time
 
 def get_arduino_port() -> serial.Serial:
     '''
@@ -26,7 +26,6 @@ def read_port_formatted(port : serial.Serial) -> str:
         Reads the serial port for its current value\n
         Additionally removes last escape characters from string
     '''
-    global default_serial_port
     if port is None: raise Exception("Port undefined")
         
     resp = port.readline().decode('utf-8')
@@ -48,19 +47,21 @@ def wait_for_arduino(port : serial.Serial):
             print("Arduino is ready")
             return
 
-def write_read(data : str, port : serial.Serial) -> str: 
+def write_read(data : str, port : serial.Serial, timeout : int = 1) -> str: 
     '''
         Writes to arduino and waits for a response.\n
-        Returns a string with the appropriate response
+        Returns a string with the appropriate response.\n
+        Optional parameter to set the timeout for a response from the Arduino
     '''
-    global default_serial_port
     if port is None: raise Exception("Port undefined")
-        
+    start_time = time.time()
     port.write(data.encode('utf-8'))
-    response = ""
-    while(response != ""):
-        response = read_port_formatted(port)
-    return response
+    resp = ""
+    while(resp == ""):
+        if (time.time() - start_time) > timeout:
+            return "REQUEST TIMED OUT"
+        resp = read_port_formatted(port)
+    return resp
 
 
 #this method will run only if this library is ran in python directly
