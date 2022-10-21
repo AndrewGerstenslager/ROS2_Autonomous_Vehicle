@@ -1,15 +1,14 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-from libraries.serial_utils import *
 
 
-class Arduino_Node(Node):
+class Motor_Node(Node):
     '''
         This class is a ros2 node that communicates to the arduino    
     '''
     def __init__(self):
-        super().__init__('Arduino_Node')
+        super().__init__('Motor_Node')
         
         #subscribe to the turn message
         self.subscription = self.create_subscription(
@@ -25,7 +24,6 @@ class Arduino_Node(Node):
             self.drive_callback,
             10)
 
-        self.subscription  # prevent unused variable warning
 
     def turn_callback(self, msg):
         '''
@@ -52,14 +50,14 @@ class Arduino_Node(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    arduino_node = Arduino_Node()
+    motor_node = Motor_Node()
 
-    rclpy.spin(arduino_node)
+    rclpy.spin(motor_node)
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
     # when the garbage collector destroys the node object)
-    arduino_node.destroy_node()
+    motor_node.destroy_node()
     rclpy.shutdown()
 
 
