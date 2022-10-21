@@ -1,0 +1,3 @@
+[console_scripts]
+arduino_node = motor_control.motor_subscriber_node:main
+
