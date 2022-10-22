@@ -1,3 +1,5 @@
+[Go to main page of README](../README.md)
+
 # MOTOR CONTROL LIBRARY
   
 ### This is the readme explaining the motor control library.
