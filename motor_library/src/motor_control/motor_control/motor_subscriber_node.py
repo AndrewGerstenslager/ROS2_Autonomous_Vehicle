@@ -1,7 +1,10 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-
+from libraries.serial_utils import (get_arduino_port,
+                                    wait_for_arduino,
+                                    write_read)
+from serial import Serial
 
 class Motor_Node(Node):
     '''
@@ -10,6 +13,8 @@ class Motor_Node(Node):
     def __init__(self):
         super().__init__('Motor_Node')
         
+        self.serial_port = self.create_serial_port()
+
         #subscribe to the turn message
         self.subscription = self.create_subscription(
             String,
@@ -24,6 +29,12 @@ class Motor_Node(Node):
             self.drive_callback,
             10)
 
+    def create_serial_port(self) -> Serial:
+        '''Creates a serial port for this class'''
+        serial_port = get_arduino_port()
+        if (serial_port is None):
+            self.get_logger().warning("No Arduino detected")
+        wait_for_arduino(serial_port)
 
     def turn_callback(self, msg):
         '''
@@ -33,7 +44,7 @@ class Motor_Node(Node):
         '''
         turn_msg = f"t,s{msg.data}"
         self.get_logger().info(f"Sent: '{turn_msg}' to Arduino")
-        #TODO: Add code to utilize serial library
+        resp = write_read(turn_msg, self.serial_port)
 
     def drive_callback(self, msg):
         '''
@@ -43,9 +54,13 @@ class Motor_Node(Node):
         '''
         drive_msg = f"d,s{msg.data}"
         self.get_logger().info(f"Sent: '{drive_msg}' to Arduino")
-        #TODO: Add code to utilize serial library
+        resp = write_read(drive_msg, self.serial_port)
 
     #TODO: Add a subscriber that can call a reset to the arduino to restablish the serial connection
+
+    #We want to be able to handle
+        #Status Examples: Online, Offline
+        #Drive State Example: Self Drive, RC Control
 
 def main(args=None):
     rclpy.init(args=args)
