@@ -8,9 +8,9 @@ int left_right_stick;
 int up_down_stick;
 int trainer_toggle;
 int controller_tolerance = 20;
-String temp = "";
+String com_usb = "";
 
-void calculate_speeds(){
+void rc_control(){
   /*
    * This method updates the drive_calculated and turn_calculated
    * values for us to access and write to the motors
@@ -122,34 +122,35 @@ void setup() {
 
   initialize_kangaroo();
   
-  
+  //KEEP THIS LINE IN
   Serial.println("Ready");
-  
-  //Serial1.print("d,s1");
-  //Serial1.print("t,s1");
-  //Serial1.print("d,s0");
-  //Serial1.print("t,s0");
-
-  
 }
 
 void loop() {
-  //wait if nothing is sent
-  //while (!Serial.available());
+  com_usb = Serial.readString();
   
-  //String received_data = Serial.readString();
-  //write_read(received_data, 1);
-
-  temp = Serial.readString();
-
-  if (temp != ""){
-    Serial.println(temp);
-    temp = "";
+  if (com_usb != ""){
+    
+    if(com_usb.charAt(0) == 'd'){
+      //Drive Command
+      Serial1.println(com_usb);
+      write_read("d,gets", true);
+    }
+    else if(com_usb.charAt(0) == 't' ){
+      //Turn Command
+      Serial1.println(com_usb);
+      write_read("t,gets", true);
+    }
+    else if(com_usb.charAt(0) == 'r' && com_usb.charAt(1) == 'c'){
+      //RC Receiver Mode
+      rc_control();
+      //TODO: use write_read() to get the turn and drive speeds and send back to python
+      Serial.println("rc");
+    }
+    else{
+      Serial.println("Command not recognized");
+    }
+    
+    com_usb = "";
   }
-
-  
-  //calculate_speeds();
-  
-  //Serial1.println("t,s" + String(turn_calculated));
-  //Serial1.println("d,s" + String(drive_calcualted));
 }
