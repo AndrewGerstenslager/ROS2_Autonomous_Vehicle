@@ -1,9 +1,9 @@
+from asyncio.log import logger
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-from libraries.serial_utils import (get_arduino_port,
-                                    wait_for_arduino,
-                                    write_read)
+
+from serial_utils import *
 from serial import Serial
 
 class Motor_Node(Node):
@@ -35,6 +35,7 @@ class Motor_Node(Node):
         if (serial_port is None):
             self.get_logger().warning("No Arduino detected")
         wait_for_arduino(serial_port)
+        self.get_logger().warning("Arduino detected")
 
     def turn_callback(self, msg):
         '''
@@ -44,7 +45,7 @@ class Motor_Node(Node):
         '''
         turn_msg = f"t,s{msg.data}"
         self.get_logger().info(f"Sent: '{turn_msg}' to Arduino")
-        resp = write_read(turn_msg, self.serial_port)
+        write_without_response(turn_msg, self.serial_port)
 
     def drive_callback(self, msg):
         '''
@@ -54,7 +55,7 @@ class Motor_Node(Node):
         '''
         drive_msg = f"d,s{msg.data}"
         self.get_logger().info(f"Sent: '{drive_msg}' to Arduino")
-        resp = write_read(drive_msg, self.serial_port)
+        write_without_response(drive_msg, self.serial_port)
 
     #TODO: Add a subscriber that can call a reset to the arduino to restablish the serial connection
 
