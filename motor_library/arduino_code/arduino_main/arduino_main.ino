@@ -3,49 +3,9 @@
 #define rc_pin_trainer_toggle 7
 
 int turn_calculated;
-int drive_calcualted;
-int left_right_stick;
-int up_down_stick;
+int drive_calculated;
 int trainer_toggle;
-int controller_tolerance = 20;
-String com_usb = "";
-
-void rc_control(){
-  /*
-   * This method updates the drive_calculated and turn_calculated
-   * values for us to access and write to the motors
-   * 
-   */
-  trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
-  
-  //If toggle switch is on setting "0"
-  //or the lowest setting
-  if(trainer_toggle > 1600){
-    left_right_stick = 1487 - pulseIn(rc_pin_left_right, HIGH);
-    //filter out inputs that are close to 0
-    if (left_right_stick > (-1 * controller_tolerance) && 
-                            left_right_stick < controller_tolerance){
-      turn_calculated = 0;
-    }
-    else{
-      turn_calculated = left_right_stick * 2;
-    }
-
-    //filter out inputs that are close to 0
-    up_down_stick = 1574 - pulseIn(rc_pin_up_down, HIGH);
-    if (up_down_stick > (-1 * controller_tolerance) && 
-                            up_down_stick < controller_tolerance){
-      drive_calcualted = 0;
-    }
-    else{
-      drive_calcualted = up_down_stick * 2;
-    }
-  }
-  else{
-    turn_calculated = 0;
-    drive_calcualted = 0;
-  }
-}
+int controller_tolerance = 25;
 
 String write_read(String data, bool send_back = 0){
   /*
@@ -68,6 +28,96 @@ String write_read(String data, bool send_back = 0){
   
   return response;
 }
+
+
+
+void self_drive_control(){
+  /*
+   * This method is used to receive data over the serial port from the NUC
+   * 
+   * We determine what command the NUC is sending, and then we execute that
+   * command then send the NUC back an appropriate response
+   * 
+   */
+  String com_usb = Serial.readString();
+  
+  if (com_usb != ""){
+    if(com_usb.charAt(0) == 'd'){
+      //Drive Command
+      Serial1.println(com_usb);
+      write_read("d,gets", true);
+    }
+    else if(com_usb.charAt(0) == 't' ){
+      //Turn Command
+      Serial1.println(com_usb);
+      //send speed back back to NUC
+      write_read("t,gets", true);
+    }
+    else if(com_usb.charAt(0) == 's'){
+      Serial1.println("d,s0");
+      Serial1.println("t,s0");
+      Serial.println("STOPPED");
+    }
+    else{
+      //Serial.println("COMMAND NOT RECOGNIZED");
+    }
+    
+    com_usb = "";
+  
+  }
+}
+
+
+void rc_control(){
+  /*
+   * This method updates the drive_calculated and turn_calculated
+   * values for us to access and write to the motors
+   * 
+   */
+  String turn_setup = "t,s";
+  String drive_setup = "d,s";
+  int left_right_stick;
+  int up_down_stick;
+   
+  trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
+  
+  //If toggle switch is on setting "0"
+  //or the lowest setting
+ // if(trainer_toggle > 1600){
+    left_right_stick = 1487 - pulseIn(rc_pin_left_right, HIGH);
+    //filter out inputs that are close to 0
+    if (left_right_stick > (-1 * controller_tolerance) && 
+                            left_right_stick < controller_tolerance){
+      turn_calculated = 0;
+    }
+    else{
+      turn_calculated = left_right_stick * 2;
+    }
+
+    //filter out inputs that are close to 0
+    up_down_stick = 1574 - pulseIn(rc_pin_up_down, HIGH);
+    if (up_down_stick > (-1 * controller_tolerance) && 
+                            up_down_stick < controller_tolerance){
+      drive_calculated = 0;
+    }
+    else{
+      drive_calculated = up_down_stick * 2;
+    }
+
+  turn_setup.concat(turn_calculated);
+  drive_setup.concat(drive_calculated);
+  Serial1.println(turn_setup);
+  Serial1.println(drive_setup);
+
+  if(write_read("t,gets", 0) != "" && write_read("d,gets", 0) != ""){
+    Serial.println("WOAH YOUR CODE SUCKS");
+    turn_calculated = 0;
+    drive_calculated = 0;
+    
+  }
+  
+}
+
 
 void initialize_kangaroo(){
   /*
@@ -110,6 +160,7 @@ void setup() {
   pinMode(rc_pin_left_right, INPUT);
   pinMode(rc_pin_up_down, INPUT);
   pinMode(rc_pin_trainer_toggle, INPUT);
+  trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
   
   //Begin Serial ports
   Serial.begin(9600);
@@ -127,30 +178,22 @@ void setup() {
 }
 
 void loop() {
-  com_usb = Serial.readString();
-  
-  if (com_usb != ""){
-    
-    if(com_usb.charAt(0) == 'd'){
-      //Drive Command
-      Serial1.println(com_usb);
-      write_read("d,gets", true);
-    }
-    else if(com_usb.charAt(0) == 't' ){
-      //Turn Command
-      Serial1.println(com_usb);
-      write_read("t,gets", true);
-    }
-    else if(com_usb.charAt(0) == 'r' && com_usb.charAt(1) == 'c'){
-      //RC Receiver Mode
-      rc_control();
-      //TODO: use write_read() to get the turn and drive speeds and send back to python
-      Serial.println("rc");
-    }
-    else{
-      Serial.println("Command not recognized");
-    }
-    
-    com_usb = "";
+  trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
+
+  if(trainer_toggle > 1600){
+    rc_control();
+    //Serial.println("RC MODE");
   }
+  else if(trainer_toggle > 1400){
+    self_drive_control();
+    //Serial.println("SELF DRIVING MODE");
+  }
+  else{
+    Serial1.println("d,s0");
+    Serial1.println("t,s0");
+    //Serial.println("STOPPED");
+  }
+  /*
+  
+  }*/
 }
