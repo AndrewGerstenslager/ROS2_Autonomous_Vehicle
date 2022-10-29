@@ -1,15 +1,21 @@
+from asyncio.log import logger
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+
+from libraries.serial_utils import *
+from serial import Serial
 
 
 class Motor_Node(Node):
     '''
         This class is a ros2 node that communicates to the arduino    
     '''
-    def __init__(self):
+    def __init__(self, port):
         super().__init__('Motor_Node')
         
+        #self.serial_port = self.create_serial_port()
+        self.serial_port = port
         #subscribe to the turn message
         self.subscription = self.create_subscription(
             String,
@@ -24,7 +30,13 @@ class Motor_Node(Node):
             self.drive_callback,
             10)
 
-        self.subscription  # prevent unused variable warning
+    def create_serial_port(self) -> Serial:
+        '''Creates a serial port for this class'''
+        serial_port = get_arduino_port()
+        if (serial_port is None):
+            self.get_logger().info("No Arduino detected")
+        wait_for_arduino(serial_port)
+        self.get_logger().info("Arduino detected")
 
     def turn_callback(self, msg):
         '''
@@ -34,7 +46,7 @@ class Motor_Node(Node):
         '''
         turn_msg = f"t,s{msg.data}"
         self.get_logger().info(f"Sent: '{turn_msg}' to Arduino")
-        #TODO: Add code to utilize serial library
+        write_without_response(turn_msg, self.serial_port)
 
     def drive_callback(self, msg):
         '''
@@ -44,14 +56,20 @@ class Motor_Node(Node):
         '''
         drive_msg = f"d,s{msg.data}"
         self.get_logger().info(f"Sent: '{drive_msg}' to Arduino")
-        #TODO: Add code to utilize serial library
+        write_without_response(drive_msg, self.serial_port)
 
     #TODO: Add a subscriber that can call a reset to the arduino to restablish the serial connection
+
+    #We want to be able to handle
+        #Status Examples: Online, Offline
+        #Drive State Example: Self Drive, RC Control
 
 def main(args=None):
     rclpy.init(args=args)
 
-    motor_node = Motor_Node()
+    arduino_port = get_arduino_port()
+    wait_for_arduino(arduino_port)
+    motor_node = Motor_Node(arduino_port)
 
     rclpy.spin(motor_node)
 

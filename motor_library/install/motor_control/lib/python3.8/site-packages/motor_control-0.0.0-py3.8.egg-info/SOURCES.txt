@@ -8,6 +8,9 @@ setup.py
 ../../build/motor_control/motor_control.egg-info/requires.txt
 ../../build/motor_control/motor_control.egg-info/top_level.txt
 ../../build/motor_control/motor_control.egg-info/zip-safe
+libraries/__init__.py
+libraries/serial_utils.py
+libraries/test_serial.py
 motor_control/__init__.py
 motor_control/arduino_status_node.py
 motor_control/motor_subscriber_node.py

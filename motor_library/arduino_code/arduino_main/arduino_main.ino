@@ -25,7 +25,6 @@ String write_read(String data, bool send_back = 0){
     Serial.println(response);
   }
   
-  
   return response;
 }
 
@@ -109,12 +108,6 @@ void rc_control(){
   Serial1.println(turn_setup);
   Serial1.println(drive_setup);
 
-  if(write_read("t,gets", 0) != "" && write_read("d,gets", 0) != ""){
-    Serial.println("WOAH YOUR CODE SUCKS");
-    turn_calculated = 0;
-    drive_calculated = 0;
-    
-  }
   
 }
 
