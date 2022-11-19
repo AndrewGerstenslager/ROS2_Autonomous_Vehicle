@@ -8,3 +8,6 @@ cd ../motor_library/
 . build_and_source.sh
 cd ../roslaunch_files
 
+# Build and source the vision library
+cd ../vision_library
+. source_and_build.sh
