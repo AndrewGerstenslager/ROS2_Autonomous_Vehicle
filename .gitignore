@@ -1,3 +1,16 @@
+# for anyone new to git, this file tells git what file formats to ignore
+# tracking on version control
+
+# * is a wildcard which just means that anything can be represented by it
+
+# these change every time ros2 builds/rebuilds a package
+# there would be a lot of clutter if we track these files
 */build/*
 */install/*
 */log/*
+
+# committing hundreds of photos is not necessary if we can use scripts to quickly 
+# get image frames from the videos we have in the repo on computers that need them
+# (see vision_library/src/libraries/save_vid_frames.ipynb)
+*.jpg*
+*.png*
