@@ -28,14 +28,16 @@ def write_without_response(data : str, port : serial.Serial):
 def main():
     print('Hi from gps_package.')
 
-    with serial.Serial(port='/dev/ttyUSB2', baudrate=115200, timeout=1) as s:
+    with serial.Serial(port='/dev/ttyUSB3', baudrate=115200, timeout=0.25) as s:
         try:
             write_without_response("log bestpos ontime 1", port=s)
             while True:
-                print(read_port_formatted())
-        except:
-            print("exit")
-            pass
+                line = s.readline().decode('utf-8')
+                if 'BESTPOS' in line:
+                    print(line)
+        #except:
+            #print("exit")
+            #pass
 
         finally:
             s.close()
