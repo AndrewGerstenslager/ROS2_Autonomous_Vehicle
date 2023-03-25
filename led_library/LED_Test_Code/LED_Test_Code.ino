@@ -54,13 +54,6 @@ void setblack () {
 FastLED.show();
 }
 
-void setblue () {
-  for (int i = 0; i <= NUM_LEDS; i++) {
-    leds[i] = CRGB ( 0, 0, 125);
-    FastLED.show();
-  }
-}
-
 void setup() {
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
