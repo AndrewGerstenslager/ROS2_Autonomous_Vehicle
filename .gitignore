@@ -14,3 +14,5 @@
 # (see vision_library/src/libraries/save_vid_frames.ipynb)
 *.jpg*
 *.png*
+
+*.vscode*
