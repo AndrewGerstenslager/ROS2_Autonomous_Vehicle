@@ -1,0 +1,16 @@
+Nov 17th/19th, 2022
+-   created a publisher and subscriber node for camera data
+-   uploaded code to dokalman repo
+-   created the structure of the vision code library
+    -   NODE: camera_pub
+        ->  pub: left_img_raw
+        ->  pub: right_img_raw
+    -   NODE: image_processing_cv
+        ->  sub: [L + R]_img_raw
+        ->  pub: [l + R]_img_processed
+    -   NODE: img_to_pointcloud
+        ->  sub: [L + R]_img_processed
+        ->  pub: pointcloud
+    -   NODE: dummy_cam
+        ->  pub: left_camera_frames
+        ->  pub: right_camera_frames

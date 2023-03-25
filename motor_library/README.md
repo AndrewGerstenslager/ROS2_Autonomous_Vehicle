@@ -1,13 +1,17 @@
 [Go to main page of README](../README.md)
 
-# MOTOR CONTROL LIBRARY
+# __MOTOR CONTROL LIBRARY__
   
-### This is the readme explaining the motor control library.
+## __Requirements for this Library__
 
+- ros2 - Foxy
+- Python
+    - pyserial
+- Arduino Ide
 
 ### We have two sections, the Python and the Arduino section:
 
-## PYTHON:
+## __PYTHON:__
 The python section has a ROS2 node that communicates to and from the ROS2 network.
 
 This code is located at /src/motor_contol/motor_control/motor_subscriber_node.py
@@ -19,7 +23,7 @@ This library is located at /src/motor_contol/motor_control/libraries/serial_util
 
 ***NOTE: We did this because ROS2 developers at this time are terrible and the ROS2 Arduino libraries are all broken, suck, and don't support basic Arduino Mega/Uno boards***
 
-## ARDUINO:
+## __ARDUINO:__
 The Arduino section is listening on the USB port for commands from python.
 When a serial connection is established or reconnected, the arduino restarts.
 When we connect with python and listen to the serial port, we should always be able to 
@@ -33,18 +37,10 @@ to the Arduino by the way we check the port.description to contain "Arduino".
 
 ***NOTE: Serial.setTimeout(10); is INCREDIBLY IMPORTANT. If not in setup(), the arduino will take 1 second each time it calls Serial.readString(); which is a huge delay. It usually takes 2ms otherwise to send and receive data***
 
-## To use this library:
+## __ROS2 Nodes__
 
-1. Install arduino_main.ino or any similar file to the Arduino using the Arduino IDE
+-   arduino_node
+    - _Description: Takes in images from left and right images and publishes raw images to ROS2_
+    - sub: turn_speed, drive_speed
 
-    ***NOTE: If Serial1 is not recognized, make sure you have "Arduino Mega" selected as the target board type***
-
-2. Build and source the package using ". build_and_source.sh" command in "/dokalman/motor_library" directory
-
-
-4. Run "ros2 pkg list | grep motor" to verify that motor_control comes up
-
-5. Finally Run "ros2 run motor_control arduino_node" to start the package
-
- 
 

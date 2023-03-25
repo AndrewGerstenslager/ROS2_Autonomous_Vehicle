@@ -1,10 +1,17 @@
+#include <FastLED.h>
 #define rc_pin_left_right 4
 #define rc_pin_up_down 5
 #define rc_pin_trainer_toggle 7
+#define rc_pin_power 8
+#define LED_PIN     12
+#define NUM_LEDS    16
+
+CRGB leds[NUM_LEDS];
 
 int turn_calculated;
 int drive_calculated;
 int trainer_toggle;
+int prev_trainer_toggle;
 int controller_tolerance = 25;
 
 String write_read(String data, bool send_back = 0){
@@ -148,11 +155,48 @@ void initialize_kangaroo(){
   
 }
 
+void setyellow (){
+  for (int i = 0; i <= NUM_LEDS; i++) {
+    leds[i] = CRGB ( 255, 255, 0);
+    delay(20);
+}
+FastLED.show();
+}
+
+void setblack () {
+    for (int i = 0; i <= NUM_LEDS; i++) {
+      leds[i] = CRGB ( 0, 0, 0);
+      delay(20);
+  }
+    FastLED.show();
+ }
+
+void wait_for_rc(){
+  Serial1.println("t,s0");
+  Serial1.println("d,s0");
+    setyellow();
+    //digitalWrite(rc_pin_power, LOW);
+    delay(500);
+    //digitalWrite(rc_pin_power, HIGH);
+    trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
+    while (trainer_toggle < 100){
+      trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
+      Serial.println(trainer_toggle);
+    }
+    setblack();
+}
+
+
 void setup() {
+  Serial.begin(9600);
+  FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
+  
   //Setup controller inputs
   pinMode(rc_pin_left_right, INPUT);
   pinMode(rc_pin_up_down, INPUT);
   pinMode(rc_pin_trainer_toggle, INPUT);
+  pinMode(rc_pin_power, OUTPUT);
+  digitalWrite(rc_pin_power, HIGH);
   trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
   
   //Begin Serial ports
@@ -165,6 +209,10 @@ void setup() {
   Serial1.setTimeout(10);
 
   initialize_kangaroo();
+
+  wait_for_rc();
+ 
+
   
   //KEEP THIS LINE IN
   Serial.println("Ready");
@@ -173,12 +221,14 @@ void setup() {
 void loop() {
   trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
 
-  if(trainer_toggle > 1600){
+  if(trainer_toggle - prev_trainer_toggle > 1600){
     rc_control();
+    //setgreen();
     //Serial.println("RC MODE");
   }
-  else if(trainer_toggle > 1400){
+  else if(trainer_toggle - prev_trainer_toggle > 1400){
     self_drive_control();
+    //setblue();
     //Serial.println("SELF DRIVING MODE");
   }
   else{
@@ -186,6 +236,8 @@ void loop() {
     Serial1.println("t,s0");
     //Serial.println("STOPPED");
   }
+
+  prev_trainer_toggle = trainer_toggle;
   /*
   
   }*/

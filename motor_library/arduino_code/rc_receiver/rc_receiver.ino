@@ -1,7 +1,9 @@
 #define rc_pin_left_right 4
 #define rc_pin_up_down 5
 #define rc_pin_trainer_toggle 7
+#define rc_pin_power 8
 
+int rate;
 int turn_calculated;
 int drive_calcualted;
 int left_right_stick;
@@ -44,16 +46,24 @@ void setup() {
   pinMode(rc_pin_left_right, INPUT);
   pinMode(rc_pin_up_down, INPUT);
   pinMode(rc_pin_trainer_toggle, INPUT);
+  pinMode(rc_pin_power, OUTPUT);
+  digitalWrite(rc_pin_power, HIGH);
+  trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
+  while (trainer_toggle < 100){
+     trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
+  }
 }
 
 
 
 
 void loop() {
- calculate_speeds();
- Serial.println("d,s" +  String(turn_calculated));
- Serial.println("t,s" + String(drive_calcualted));
- delay(500);
+ //calculate_speeds();
+ //Serial.println("d,s" +  String(turn_calculated));
+ //Serial.println("t,s" + String(drive_calcualted));
+ rate = pulseIn(rc_pin_up_down, HIGH);
+ Serial.println(rate);
+ //delay(500);
 }
 
 //in4 left right - all left = {1184} all right = {1791}
