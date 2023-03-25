@@ -19,8 +19,6 @@ String WaitForInput(String setcolor) {
 void setred () {
   for (int i = 0; i <= NUM_LEDS; i++) {
     leds[i] = CRGB ( 125, 0, 10);
-    delay(50);
-  
   }
   FastLED.show();
 }
@@ -28,7 +26,6 @@ void setred () {
 void setyellow (){
   for (int i = 0; i <= NUM_LEDS; i++) {
     leds[i] = CRGB ( 255, 255, 0);
-    delay(20);
 }
 FastLED.show();
 }
@@ -36,7 +33,6 @@ FastLED.show();
 void setgreen (){
   for (int i = 0; i <= NUM_LEDS; i++) {
     leds[i] = CRGB ( 0, 128, 0);
-    delay(20);
 }
 FastLED.show();
 }
@@ -44,14 +40,13 @@ FastLED.show();
 void setblack () {
   for (int i = 0; i <= NUM_LEDS; i++) {
     leds[i] = CRGB ( 0, 0, 0);
-    delay(20);
 }
 FastLED.show();
 }
 
 void setblue () {
-  for (int i = 19; i >= 0; i--) {
-    leds[i] = CRGB ( 10, 0, 125);
+  for (int i = 0; i <= NUM_LEDS; i++) {
+    leds[i] = CRGB ( 0, 0, 125);
     FastLED.show();
   }
 }
@@ -61,10 +56,11 @@ void setup() {
   Serial.println("I'M ALIVE!");
 
   FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
-
+  
 }
 
 void loop() {
+  
   RecievedInput = WaitForInput("Set color: ");
   Serial.println("The string you entered was: ");
   Serial.println(RecievedInput);
