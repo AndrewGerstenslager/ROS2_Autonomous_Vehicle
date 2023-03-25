@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="velodyne_driver" exec="velodyne_driver_node" name="velodyne_driver_node"/>
+	<node pkg="velodyne_laserscan" exec="velodyne_laserscan_node" name="velodyne_laserscan_node"/>
+		
+</launch>
