@@ -1,1 +1,1 @@
-ros2 launch velodyne velodyne-all-nodes-VLP16-launch.py
+rviz2 -d ~/repo/dokalman/rviz2_parameters.rviz
