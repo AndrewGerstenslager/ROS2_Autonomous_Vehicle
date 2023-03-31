@@ -24,14 +24,14 @@ run "pkg-config --modversion opencv4"
 
 4. In settings.json, add the following configuration, which tells the C++ extension where to find the OpenCV header files:
 
-'''json
+
 {
     "C_Cpp.default.includePath": [
         "${workspaceFolder}/**",
         "/usr/local/include/opencv4"
     ]
 }
-'''
+
 
 
 NOTE: The GUI for settings also has a button where you can type in and add the path for opencv.
