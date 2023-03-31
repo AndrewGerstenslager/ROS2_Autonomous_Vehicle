@@ -32,6 +32,10 @@ run "pkg-config --modversion opencv4"
     ]
 }
 
-
-
 NOTE: The GUI for settings also has a button where you can type in and add the path for opencv.
+
+
+### 5. Make sure to open the folder in VS Code with OPENCV_CPP as the root folder
+
+The code won't execute properly because the launch.json and tasks.json will not be recognized by the compiler/extensions properly.
+
