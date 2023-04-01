@@ -20,7 +20,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'image_node = my_first_package.image_publisher:main'
+            'image_pub_node = my_first_package.image_publisher:main',
+            'image_sub_node = my_first_package.image_subscriber:main',
+            'image_process_node = my_first_package.image_process_subscriber:main',
         ],
     },
 )
