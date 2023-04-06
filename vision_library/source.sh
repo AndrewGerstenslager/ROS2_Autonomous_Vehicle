@@ -1,5 +1,8 @@
-# source overlay
-. install/local_setup.bash
+source /opt/ros/foxy/setup.bash
 
-# build using colcon
 colcon build
+. install/setup.bash
+
+ros2 pkg list | grep my_first_package
+echo "EXECUTABLES:"
+ros2 pkg executables my_first_package                 

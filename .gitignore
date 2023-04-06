@@ -5,9 +5,11 @@
 
 # these change every time ros2 builds/rebuilds a package
 # there would be a lot of clutter if we track these files
-*/build/*
-*/install/*
-*/log/*
+*build*
+*install*
+*log*
+*share*
+*build*
 
 # committing hundreds of photos is not necessary if we can use scripts to quickly 
 # get image frames from the videos we have in the repo on computers that need them
