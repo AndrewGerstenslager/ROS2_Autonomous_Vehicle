@@ -1,8 +1,10 @@
-source /opt/ros/foxy/setup.bash
-
 colcon build
 . install/setup.bash
 
-ros2 pkg list | grep my_first_package
-echo "EXECUTABLES:"
-ros2 pkg executables my_first_package                 
+echo "PACKAGE BUILT"
+ros2 pkg list | grep cpp_image_processing
+
+echo "EXECUTABLES IN PACKAGE"
+ros2 pkg executables cpp_image_processing
+
+source install/setup.bash
