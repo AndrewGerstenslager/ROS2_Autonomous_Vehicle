@@ -1,0 +1,575 @@
+<robot
+  name="MK2_ASSMB_urdf.SLDASM">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.248399864133561 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="11.0518018106674" />
+      <inertia
+        ixx="0.33691676013799"
+        ixy="-7.59487894882321E-06"
+        ixz="-0.000722402607668578"
+        iyy="0.303654682883529"
+        iyz="-0.000791840912314502"
+        izz="0.089211469112301" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="L_Wheel">
+    <inertial>
+      <origin
+        xyz="0.0253999999999996 0 -1.02695629777827E-15"
+        rpy="0 0 0" />
+      <mass
+        value="4.02199061533639" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.16828 0.26035 -0.052147"
+		rpy="0 0 0"  />
+      <geometry>
+        <cylinder length="0.0508" radius="0.15875"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.16828 0.2333 -0.052147"
+		rpy="0 0 0" />
+      <geometry>
+        <cylinder length="0.0508" radius="0.15875"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="L_Wheel"
+    type="revolute">
+    <origin
+      xyz="0.16828 0.26035 -0.052147"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="L_Wheel" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="R_Wheel">
+    <inertial>
+      <origin
+		xyz="0.16828 -0.26035 -0.052147"
+		rpy="0 0 0" />
+      <mass
+        value="4.02199061533639" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder length="0.0508" radius="0.15875"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder length="0.0508" radius="0.15875"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="R_Wheel"
+    type="revolute">
+    <origin
+      xyz="0.16828 -0.26035 -0.052147"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="R_Wheel" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Front_GPS">
+    <inertial>
+      <origin
+        xyz="0.0243149216062398 -0.0269383661459979 0.0276853387578149"
+        rpy="0 0 0" />
+      <mass
+        value="0.207147472858361" />
+      <inertia
+        ixx="4.93535852765045E-05"
+        ixy="5.60387718458688E-09"
+        ixz="1.88593701570856E-07"
+        iyy="1.72280099849663E-05"
+        iyz="3.56072323460869E-06"
+        izz="3.33298188780608E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/Front_GPS.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/Front_GPS.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Front_GPS"
+    type="fixed">
+    <origin
+      xyz="0.677390000000001 0 0.469265577102575"
+      rpy="0 0 3.14031901916527" />
+    <parent
+      link="base_link" />
+    <child
+      link="Front_GPS" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="Back_GPS">
+    <inertial>
+      <origin
+        xyz="0.024314920817757 -0.026938386773698 0.0276853283704292"
+        rpy="0 0 0" />
+      <mass
+        value="0.207147506345151" />
+      <inertia
+        ixx="4.93535922714793E-05"
+        ixy="5.56427842301245E-09"
+        ixz="1.88592807783652E-07"
+        iyy="1.72280150103303E-05"
+        iyz="3.56070394017216E-06"
+        izz="3.33298208182311E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/Back_GPS.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/Back_GPS.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Back_GPS"
+    type="fixed">
+    <origin
+      xyz="-0.0868399999999995 0 0.469265577102574"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Back_GPS" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="FR_Cam">
+    <inertial>
+      <origin
+        xyz="0.00967020319668954 -0.0221796128113793 0.00902344018325335"
+        rpy="0 0 0" />
+      <mass
+        value="0.0828975105493724" />
+      <inertia
+        ixx="2.22329493898369E-05"
+        ixy="4.37521886725841E-10"
+        ixz="-2.76269922783969E-10"
+        iyy="6.33773459599071E-06"
+        iyz="1.00369144957284E-05"
+        izz="1.58952148179321E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/FR_Cam.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/FR_Cam.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FR_Cam"
+    type="fixed">
+    <origin
+      xyz="0.520082565126247 -0.157780619091712 0.494182622766726"
+      rpy="0 0 -1.12150490879254" />
+    <parent
+      link="base_link" />
+    <child
+      link="FR_Cam" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="FL_Cam">
+    <inertial>
+      <origin
+        xyz="0.00967039401180214 -0.0221794379410828 0.00902330426205422"
+        rpy="0 0 0" />
+      <mass
+        value="0.0828969585390399" />
+      <inertia
+        ixx="2.22325117403042E-05"
+        ixy="6.16318991655934E-10"
+        ixz="-3.8916922604601E-10"
+        iyy="6.33759142598143E-06"
+        iyz="1.00367081492048E-05"
+        izz="1.58949203621179E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/FL_Cam.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/FL_Cam.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FL_Cam"
+    type="fixed">
+    <origin
+      xyz="0.480124970246678 0.177025282086408 0.49418262276673"
+      rpy="0 0 1.12150490879254" />
+    <parent
+      link="base_link" />
+    <child
+      link="FL_Cam" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="B_Cam">
+    <inertial>
+      <origin
+        xyz="-0.00967037324167647 -0.022179512732746 0.00902331174013184"
+        rpy="0 0 0" />
+      <mass
+        value="0.0828968753781971" />
+      <inertia
+        ixx="2.22325741286387E-05"
+        ixy="5.41935797528009E-10"
+        ixz="-3.42200268388791E-10"
+        iyy="6.33760015894698E-06"
+        iyz="1.00367320069923E-05"
+        izz="1.58949740066461E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/B_Cam.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/B_Cam.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="B_Cam"
+    type="fixed">
+    <origin
+      xyz="-0.132412852027213 -0.120605055124835 0.494182622766733"
+      rpy="0 0 3.14159265358979" />
+    <parent
+      link="base_link" />
+    <child
+      link="B_Cam" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="lidar">
+    <inertial>
+      <origin
+        xyz="0.0317499999999999 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.20109953076682" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2 ASSMB urdf 2.0 .SLDASM/meshes/lidar.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2 ASSMB urdf 2.0 .SLDASM/meshes/lidar.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lidar"
+    type="fixed">
+    <origin
+      xyz="0.4445 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="lidar" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+    <link
+    name="gps_link">
+    <inertial>
+      <origin
+        xyz="0.0317499999999999 1.85057357132753E-16 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.20109953076682" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2 ASSMB urdf 3.0.SLDASM/meshes/gps_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2 ASSMB urdf 3.0.SLDASM/meshes/gps_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gps_link"
+    type="fixed">
+    <origin
+      xyz="0.295275000000001 0 0.474421969619985"
+      rpy="0 0 -5.5355174640719E-17" />
+    <parent
+      link="base_link" />
+    <child
+      link="gps_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="base_imu_link">
+    <inertial>
+      <origin
+        xyz="0.0127 0.035341393442623 -0.015875"
+        rpy="0 0 0" />
+      <mass
+        value="0.0256047875" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/imu.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://MK2_ASSMB_urdf.SLDASM/meshes/imu.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="base_imu_link"
+    type="fixed">
+    <origin
+      xyz="0.143383 -0.035341393442623 0.344246969619992"
+      rpy="0 3.1415 1.5707"/>
+    <parent
+      link="base_link" />
+    <child
+      link="base_imu_link" />
+    <axis
+      xyz="0 3.1415 1.5707" />
+  </joint>
+</robot>
