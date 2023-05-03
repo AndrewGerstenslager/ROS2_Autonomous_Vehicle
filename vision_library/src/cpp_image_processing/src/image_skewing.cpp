@@ -33,7 +33,7 @@ private:
     void loadIPMMatrix()
 {
     std::string package_share_directory = ament_index_cpp::get_package_share_directory("cpp_image_processing");
-    RCLCPP_INFO(this->get_logger(), "Package share directory: %s", package_share_directory.c_str());
+    //RCLCPP_INFO(this->get_logger(), "Package share directory: %s", package_share_directory.c_str());
 
     std::string calibration_data_file = package_share_directory + "/calibration_data/video2.txt";
 
@@ -49,6 +49,15 @@ private:
     RCLCPP_INFO(this->get_logger(), "Attempting to read from file: %s", calibration_data_file.c_str());
 
     std::ifstream file(calibration_data_file);
+    if (file.is_open()) {
+        std::string line;
+        while (std::getline(file, line)) {
+            std::cout << "Line: " << line << std::endl;
+        }
+        test_ifstream.close();
+    } else {
+        std::cout << "Unable to open file: " << std::endl;
+    }
     if (file.is_open())
     {
         cout << "YO" << endl;
@@ -121,8 +130,25 @@ private:
   cv::Mat ipm_matrix;
 };
 
+void test_ifstream() {
+    std::string test_file = "test.txt";
+    std::ifstream test_ifstream(test_file);
+    cout << "YO" << endl;
+    if (test_ifstream.is_open()) {
+        std::string line;
+        while (std::getline(test_ifstream, line)) {
+            std::cout << "Line: " << line << std::endl;
+        }
+        test_ifstream.close();
+    } else {
+        std::cout << "Unable to open file: " << test_file << std::endl;
+    }
+}
+
+
 int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
+  test_ifstream();
 
   // Create the IpmNode
   auto node = std::make_shared<IpmNode>();
