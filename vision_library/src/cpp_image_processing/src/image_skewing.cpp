@@ -54,7 +54,7 @@ private:
         while (std::getline(file, line)) {
             std::cout << "Line: " << line << std::endl;
         }
-        test_ifstream.close();
+        file.close();
     } else {
         std::cout << "Unable to open file: " << std::endl;
     }
@@ -80,6 +80,7 @@ private:
         RCLCPP_ERROR(this->get_logger(), "Unable to open IPM matrix file.");
         // Handle the error appropriately.
     }
+    cout <<"HELP" << endl;
 }
 
 
@@ -130,25 +131,10 @@ private:
   cv::Mat ipm_matrix;
 };
 
-void test_ifstream() {
-    std::string test_file = "test.txt";
-    std::ifstream test_ifstream(test_file);
-    cout << "YO" << endl;
-    if (test_ifstream.is_open()) {
-        std::string line;
-        while (std::getline(test_ifstream, line)) {
-            std::cout << "Line: " << line << std::endl;
-        }
-        test_ifstream.close();
-    } else {
-        std::cout << "Unable to open file: " << test_file << std::endl;
-    }
-}
 
 
 int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
-  test_ifstream();
 
   // Create the IpmNode
   auto node = std::make_shared<IpmNode>();
