@@ -15,8 +15,8 @@ public:
   RawImageNode()
       : Node("opencv_image_publisher"), count_(0), current_image_(image_paths_.begin()) {
     // Declare and retrieve the parameter
-    this->declare_parameter("topic_name_pub", "default_topic_pub");
-    topic_name_pub_ = this->get_parameter("topic_name_pub").as_string();
+    this->declare_parameter("published_topic", "default_topic_pub");
+    topic_name_pub_ = this->get_parameter("published_topic").as_string();
 
     publisher_ = this->create_publisher<sensor_msgs::msg::Image>(topic_name_pub_, 10);
     timer_ = this->create_wall_timer(5000ms, std::bind(&RawImageNode::timer_callback, this));

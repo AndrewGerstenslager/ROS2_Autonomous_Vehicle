@@ -1,4 +1,0 @@
-<launch>
-    <node pkg="cpp_image_processing" exec="raw_image_static" name="raw_image_static"/>
-    <node pkg="cpp_image_processing" exec="image_processer" name="image_processer"/>
-</launch>

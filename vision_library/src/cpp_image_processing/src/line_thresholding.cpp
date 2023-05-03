@@ -13,15 +13,15 @@ public:
     : Node("image_processor") {
 
     // Retrieve the topic names from the ROS2 parameter server
-    this->declare_parameter("topic_name_pub", "default_topic_pub");
-    this->declare_parameter("topic_name_sub", "default_topic_sub");
+    this->declare_parameter<std::string>("subscribed_topic", "input_image");
+    this->declare_parameter<std::string>("published_topic", "output_image");
 
-    string topic_name_pub = this->get_parameter("topic_name_pub").as_string();
-    string topic_name_sub = this->get_parameter("topic_name_sub").as_string();
+    std::string subscribed_topic = this->get_parameter("subscribed_topic").as_string();
+    std::string published_topic = this->get_parameter("published_topic").as_string();
 
-    publisher_ = this->create_publisher<sensor_msgs::msg::Image>(topic_name_pub, 10);
+    publisher_ = this->create_publisher<sensor_msgs::msg::Image>(published_topic, 10);
     subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
-        topic_name_sub, 10, bind(&ImageProcessor::image_callback, this, placeholders::_1));
+        subscribed_topic, 10, bind(&ImageProcessor::image_callback, this, placeholders::_1));
   }
 
 private:
@@ -49,7 +49,7 @@ private:
 
     // Threshold the image to detect the white line
     Mat img_thr;
-    threshold(img_bw, img_thr, 215, 255, THRESH_BINARY);
+    threshold(img_bw, img_thr, 180, 255, THRESH_BINARY);
 
     // Find contours in the thresholded image
     vector<vector<Point>> contours;
