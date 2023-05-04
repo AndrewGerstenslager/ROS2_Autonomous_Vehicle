@@ -8,3 +8,5 @@ echo "SOURCING PACKAGE"
 echo "PACKAGES BUILT:"
 ros2 pkg list | grep dokalman_model_package
 echo "DONE"
+echo "EXECUTABLES:"
+ros2 pkg executables dokalman_model_package    
