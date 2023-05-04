@@ -15,10 +15,11 @@ public:
     // Retrieve the topic names from the ROS2 parameter server
     this->declare_parameter<std::string>("subscribed_topic", "input_image");
     this->declare_parameter<std::string>("published_topic", "output_image");
+    this->declare_parameter<int>("threshold_value", 100);
 
     std::string subscribed_topic = this->get_parameter("subscribed_topic").as_string();
     std::string published_topic = this->get_parameter("published_topic").as_string();
-
+    thresh_val = this->get_parameter("threshold_value").as_int();
     publisher_ = this->create_publisher<sensor_msgs::msg::Image>(published_topic, 10);
     subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
         subscribed_topic, 10, bind(&ImageProcessor::image_callback, this, placeholders::_1));
@@ -49,7 +50,7 @@ private:
 
     // Threshold the image to detect the white line
     Mat img_thr;
-    threshold(img_bw, img_thr, 180, 255, THRESH_BINARY);
+    threshold(img_bw, img_thr, thresh_val, 255, THRESH_BINARY);
 
     // Find contours in the thresholded image
     vector<vector<Point>> contours;
@@ -74,7 +75,7 @@ private:
     // Publish the processed image
     publisher_->publish(*processed_msg);
   }
-
+  int thresh_val;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr publisher_;
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
 };
