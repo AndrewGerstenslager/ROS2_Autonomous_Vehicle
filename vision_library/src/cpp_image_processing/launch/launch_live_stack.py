@@ -18,14 +18,14 @@ def generate_launch_description():
 
         Node(
             package='cpp_image_processing',
-            executable='line_threshold',
+            executable='image_threshold',
             name='right_line_threshold',
             parameters=[{'subscribed_topic': 'right_img_raw'},
                         {'published_topic': 'right_img_processed'}]
         ),
         Node(
             package='cpp_image_processing',
-            executable='line_threshold',
+            executable='image_threshold',
             name='left_line_threshold',
             parameters=[{'subscribed_topic': 'left_img_raw'},
                         {'published_topic': 'left_img_processed'}]

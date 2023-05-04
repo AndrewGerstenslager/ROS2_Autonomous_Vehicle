@@ -18,27 +18,37 @@ find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)  
+find_package(tf2_msgs REQUIRED) 
+
 
 # build packages
-add_executable(raw_image_static src/static_image_publisher.cpp)
-ament_target_dependencies(raw_image_static rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
+add_executable(static_feed src/static_image_publisher.cpp)
+ament_target_dependencies(static_feed rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
 
-add_executable(line_threshold src/line_thresholding.cpp)
-ament_target_dependencies(line_threshold rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
 
 add_executable(live_feed src/live_image_publisher.cpp)
 ament_target_dependencies(live_feed rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
 
+add_executable(image_threshold src/image_thresholding.cpp)
+ament_target_dependencies(image_threshold rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
+
 add_executable(image_skew src/image_skewing.cpp)
 ament_target_dependencies(image_skew rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
+
+add_executable(image_to_pointcloud src/image_to_pointcloud.cpp)
+ament_target_dependencies(image_to_pointcloud rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV pcl_conversions geometry_msgs)
 
 
 # install packages
 install(TARGETS
-  raw_image_static
-  line_threshold
+  static_feed
   live_feed
+  image_threshold
   image_skew
+  image_to_pointcloud
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch
