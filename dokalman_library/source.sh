@@ -1,4 +1,6 @@
 #THIS IS A CUSTOM INITALIZATION FILE
+rm -r install
+
 
 echo "BUILDING PACKAGE"
 colcon build --packages-select dokalman
