@@ -12,4 +12,4 @@ ros2 pkg list | grep dokalman
 echo "DONE"
 echo "EXECUTABLES:"
 ros2 pkg executables dokalman 
-ros2 launch dokalman display.launch.py
+#ros2 launch dokalman display_rviz.launch.py
