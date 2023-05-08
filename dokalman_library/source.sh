@@ -10,6 +10,9 @@ echo "SOURCING PACKAGE"
 echo "PACKAGES BUILT:"
 ros2 pkg list | grep dokalman
 echo "DONE"
-echo "EXECUTABLES:"
+echo "EXECUTABLES DOKALMAN:"
 ros2 pkg executables dokalman 
+
+echo "EXECUTABLES DOKALMAN_CONTROLLER:"
+ros2 pkg executables dokalman_controller
 #ros2 launch dokalman display_rviz.launch.py
