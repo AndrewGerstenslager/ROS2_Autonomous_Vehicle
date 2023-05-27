@@ -37,17 +37,17 @@ def parse_gps_message(msg):
 def get_gps_ports():
     # Get a list of all available serial ports
     available_ports = serial.tools.list_ports.comports()
-
+    device1=device2 = None
     # Define the pattern to search for in the port description
     pattern = "Novatel"
-
     # Loop through the list of available ports and look for matching descriptions
     for port in available_ports:
-        if pattern in port.usb_description():
+        if pattern in port.description:
             if device1 is None:
                 device1 = serial.Serial(port.device)
             elif device2 is None:
                 device2 = serial.Serial(port.device)
+            
             if device1 is not None and device2 is not None:
                 return device1, device2
     return None

@@ -4,12 +4,16 @@ from sensor_msgs.msg import NavSatFix
 from std_msgs.msg import Float64
 from libraries.gps_libry_utils import * 
 
+lat_lon_global = None
+heading_global = None
+
 class MyPublisher(Node):
+    
     def __init__(self):
         super().__init__('my_publisher')
-        self.latitude_longitude_publisher = self.create_publisher(NavSatFix, 'gps', 10)
-        self.heading_publisher = self.create_publisher(Float64, 'heading', 10)
-        timer_period = 0.1  # seconds
+        self.latitude_longitude_publisher = self.create_publisher(NavSatFix, 'gps', 1)
+        self.heading_publisher = self.create_publisher(Float64, 'heading', 1)
+        timer_period = 0.5  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
     def timer_callback(self):
@@ -22,6 +26,7 @@ class MyPublisher(Node):
         heading2a = read_port_formatted(device1)
         if heading2a and "HEADING2A" in heading2a:
             heading_global = heading2a.split(",")[12]
+            device1.read_all()
             
         #READ FROM DEVICE 2 FOR POSITION
         position = read_port_formatted(device2)
@@ -29,16 +34,18 @@ class MyPublisher(Node):
             lat_lon_dict = parse_gps_message(position)
             if lat_lon_dict:
                 lat_lon_global = lat_lon_dict
+                device2.read_all()
+
 
         #GET AND PUBLISH LON_LAT
         if lat_lon_global:
-            lat_lon_msg.latitude = lat_lon_global['latitude']
-            lat_lon_msg.longitude = lat_lon_global['longitude']
+            lat_lon_msg.latitude = float(lat_lon_global['latitude'])
+            lat_lon_msg.longitude = float(lat_lon_global['longitude'])
             self.latitude_longitude_publisher.publish(lat_lon_msg)
         
         #GET AND PUBLISH HEADING
         if heading_global:
-            heading_msg.data = heading_global
+            heading_msg.data = float(heading_global)
             self.heading_publisher.publish(heading_msg)
 
 
@@ -62,7 +69,7 @@ def main(args=None):
     print("Connected to Novatel device 2 on", device2.name)
 
     write_without_response("log heading2a onchanged\r\n", port=device1)
-    write_without_response("log bestpos ontime 0.25\r\n", port=device2)
+    write_without_response("log bestpos ontime 0.1\r\n", port=device2)
 
     
     
