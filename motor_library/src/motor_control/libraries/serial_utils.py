@@ -13,7 +13,7 @@ def get_arduino_port() -> serial.Serial:
     port_name = ""
     for port in serial.tools.list_ports.comports():
         print(port.description)
-        if 'Arduino' in port.description or 'ACM' in port.description:
+        if 'ACM' in port.description and not "9DOF" in port.description:
             port_name = port.device
     if port_name != "":
         print(f"Arduino found on port: \"{port_name}\"")
