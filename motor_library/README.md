@@ -1,4 +1,4 @@
-[Go to main page of README](../README.md)
+### [go to main page](../README.md)
 
 # __MOTOR CONTROL LIBRARY__
   
