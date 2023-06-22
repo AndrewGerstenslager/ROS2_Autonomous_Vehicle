@@ -9,3 +9,5 @@ ros2 run xacro xacro -o dokalman_description.urdf dokalman_description.xacro
 
 # Convert urdf to sdf
 gz sdf -p dokalman_description.urdf > dokalman_description.sdf
+
+#gazebo --verbose -s libgazebo_ros_factory.so path/to/your/output_sdf.sdf

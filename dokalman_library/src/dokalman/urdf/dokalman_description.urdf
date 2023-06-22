@@ -6,6 +6,11 @@
 <robot name="dokalman">
   <!-- Robot Base -->
   <link name="base_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="8"/>
+      <inertia ixx="0.56" ixy="0" ixz="0" iyy="0.38" iyz="0" izz="0.21"/>
+    </inertial>
     <visual>
       <origin rpy="0 0 1.5708" xyz="0 0 0"/>
       <!-- 1.5708 radians = 90 degrees -->
@@ -25,6 +30,11 @@
     <origin rpy="0 0 0" xyz="0.0 0.0 -0.155"/>
   </joint>
   <link name="drivewhl_l_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1"/>
+      <inertia ixx="0.0008" ixy="0" ixz="0" iyy="0.0008" iyz="0" izz="0.00015"/>
+    </inertial>
     <visual>
       <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
       <geometry>
@@ -42,6 +52,11 @@
     <axis xyz="0 1 0"/>
   </joint>
   <link name="drivewhl_r_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1"/>
+      <inertia ixx="0.0008" ixy="0" ixz="0" iyy="0.0008" iyz="0" izz="0.00015"/>
+    </inertial>
     <visual>
       <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
       <geometry>
@@ -60,6 +75,11 @@
   </joint>
   <!-- Caster Wheel -->
   <link name="front_caster">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0002"/>
+    </inertial>
     <visual>
       <origin rpy="1.5708 0 1.5708" xyz="-0.05 0 -0.16"/>
       <!-- 1.5708 radians = 90 degrees -->
@@ -78,6 +98,11 @@
   </joint>
   <!-- GPS -->
   <link name="back_gps">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000002"/>
+    </inertial>
     <visual>
       <origin rpy="1.5708 0 1.5708" xyz="-0.025 0.025 0"/>
       <!-- 1.5708 radians = 90 degrees -->
@@ -95,6 +120,11 @@
     <origin rpy="0 0 0" xyz="0.0 0.0 0.465"/>
   </joint>
   <link name="front_gps">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000002"/>
+    </inertial>
     <visual>
       <origin rpy="1.5708 0 -1.5708" xyz="0.025 -0.025 0"/>
       <!-- 1.5708 radians = 90 degrees -->
@@ -113,6 +143,11 @@
   </joint>
   <!-- CAMERAS -->
   <link name="left_cam">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.000005" ixy="0" ixz="0" iyy="0.000005" iyz="0" izz="0.00001"/>
+    </inertial>
     <visual>
       <origin rpy="1.5708 0 1.5708" xyz="0.01 0.02 0.025"/>
       <!-- 1.5708 radians = 90 degrees -->
@@ -130,6 +165,11 @@
     <origin rpy="0 0 -1" xyz="0.5 -0.16 0.465"/>
   </joint>
   <link name="right_cam">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.2"/>
+      <inertia ixx="0.000005" ixy="0" ixz="0" iyy="0.000005" iyz="0" izz="0.00001"/>
+    </inertial>
     <visual>
       <origin rpy="1.5708 0 1.5708" xyz="0.01 0.02 0.025"/>
       <!-- 1.5708 radians = 90 degrees -->

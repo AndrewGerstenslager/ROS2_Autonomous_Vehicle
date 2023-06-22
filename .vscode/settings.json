@@ -2,5 +2,6 @@
     "cSpell.words": [
         "DOKALMAN",
         "dokalman",
-    ]
+    ],
+    "cmake.sourceDirectory": "/home/ubuntu/repo/dokalman/dokalman_library/src/dokalman"
 }
