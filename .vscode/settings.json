@@ -3,5 +3,6 @@
         "DOKALMAN",
         "dokalman",
     ],
-    "cmake.sourceDirectory": "/home/ubuntu/repo/dokalman/dokalman_library/src/dokalman"
+    "cmake.sourceDirectory": "/home/ubuntu/repo/dokalman/dokalman_library/src/dokalman",
+    "python.formatting.provider": "black"
 }

@@ -1,18 +1,16 @@
-#THIS IS A CUSTOM INITALIZATION FILE
-rm -r install
+#!/bin/bash
 
+# Change the working directory to the location of the script
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
-echo "BUILDING PACKAGE"
-colcon build --packages-select dokalman
-echo "SOURCING PACKAGE"
-. install/local_setup.bash
+# THIS IS A CUSTOM INITIALIZATION FILE
+source /opt/ros/foxy/setup.bash
 
-echo "PACKAGES BUILT:"
-ros2 pkg list | grep dokalman
-echo "DONE"
-echo "EXECUTABLES DOKALMAN:"
-ros2 pkg executables dokalman 
+colcon build
+source install/setup.bash
 
-echo "EXECUTABLES DOKALMAN_CONTROLLER:"
-ros2 pkg executables dokalman_controller
-#ros2 launch dokalman display_rviz.launch.py
+ros2 pkg list | grep dokalman_library
+echo "EXECUTABLES:"
+ros2 pkg executables dokalman_library              
+echo "LAUNCH FILES:"
+ls launch

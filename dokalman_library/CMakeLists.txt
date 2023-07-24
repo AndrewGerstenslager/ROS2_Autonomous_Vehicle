@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(dokalman)
+project(dokalman_library)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -21,12 +21,6 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-install(
-  DIRECTORY src launch rviz urdf meshes worlds
-  DESTINATION share/${PROJECT_NAME}
-)
-
-
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
@@ -38,8 +32,9 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-
-
-
+install(
+  DIRECTORY config description launch worlds meshes
+  DESTINATION share/${PROJECT_NAME}
+)
 
 ament_package()
