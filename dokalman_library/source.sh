@@ -14,3 +14,5 @@ echo "EXECUTABLES:"
 ros2 pkg executables dokalman_library              
 echo "LAUNCH FILES:"
 ls launch
+
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:worlds/models/custom_ground/models
