@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="line_det_course">
+    <static>true</static>
+    <!--ground-->
+    <link name="ground">
+      <visual name="visual">
+        <geometry>
+          <plane>
+            <size>25 25</size>
+          </plane>
+        </geometry>
+        <material>
+          <script>
+	    <uri>model://line_det_course/materials/scripts/ground.material</uri>
+	    <uri>model://line_det_course/materials/textures/ground.png</uri>
+            <name>ground</name>
+          </script>
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <plane>
+            <size>25 25</size>
+          </plane>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>100</mu>
+              <mu2>50</mu2>
+            </ode>
+          </friction>
+          <bounce/>
+          <contact>
+            <ode/>
+          </contact>
+        </surface>
+      </collision>
+    </link>
+  </model>
+</sdf>

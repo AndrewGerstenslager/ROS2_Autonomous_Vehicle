@@ -1,0 +1,1 @@
+ros2 bag record -o ~/repo/dokalman/dokalman_library/ros2_bags/my_bag /camera/image_raw /cmd_vel
