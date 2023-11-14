@@ -15,6 +15,5 @@
 # get image frames from the videos we have in the repo on computers that need them
 # (see vision_library/src/libraries/save_vid_frames.ipynb)
 *.jpg*
-*.png*
 
 *.vscode*
