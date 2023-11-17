@@ -47,6 +47,12 @@ class SparkfunImuNode(Node):
                 imu_msg.angular_velocity.x = float(values[4])
                 imu_msg.angular_velocity.y = float(values[5])
                 imu_msg.angular_velocity.z = float(values[6])
+
+
+                # Angular velocity [rad/s]
+                imu_msg.orientation.x = float(values[7])
+                imu_msg.orientation.y = float(values[8])
+                imu_msg.orientation.z = float(values[9])
                 
                 self.publisher_.publish(imu_msg)
 
