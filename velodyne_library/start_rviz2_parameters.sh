@@ -1,0 +1,1 @@
+rviz2 -d ~/repo/dokalman/rviz2_parameters.rviz
