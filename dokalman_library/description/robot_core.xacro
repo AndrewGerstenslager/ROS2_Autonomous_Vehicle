@@ -22,21 +22,23 @@
 
     <link name="chassis">
         <visual>
-            <origin xyz="0.15 0 0.075"/>
-            <geometry>
-                <box size="0.3 0.3 0.15"/>
-            </geometry>
-            <material name="white"/>
+        <geometry>
+            <mesh filename="file://$(find dokalman_library)/meshes/3DBenchy.stl" scale="0.01 0.01 0.01" />
+        </geometry>
+        <material name="red"/>
         </visual>
         <collision>
-            <origin xyz="0.15 0 0.075"/>
-            <geometry>
-                <box size="0.3 0.3 0.15"/>
-            </geometry>
+        <origin rpy="0 1.5708 0" xyz="0.25 0 0" />
+        <geometry>
+            <cylinder length="0.5" radius="0.05" />
+        </geometry>
+        <material name="red"/>
         </collision>
-        <xacro:inertial_box mass="0.5" x="0.3" y="0.3" z="0.15">
-            <origin xyz="0.15 0 0.075" rpy="0 0 0"/>
-        </xacro:inertial_box>
+        <inertial>
+        <origin xyz="0 0 .25" rpy="0 0 0" />
+        <mass value="1" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+        </inertial>
     </link>
 
     <gazebo reference="chassis">

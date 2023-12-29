@@ -5,15 +5,15 @@ from launch_ros.substitutions import FindPackageShare
 from launch_ros.descriptions import ParameterValue
 
 def generate_launch_description():
-    # Define the path to the DokalmanURDF.urdf file
+    # Define the path to the DokalmanCore.xacro file
     dokalman_library_path = FindPackageShare('dokalman_library')
-    dokalman_urdf_file = PathJoinSubstitution([dokalman_library_path, 'urdf', 'DokalmanURDF.urdf'])
+    dokalman_xacro_file = PathJoinSubstitution([dokalman_library_path, 'urdf', 'DokalmanCore.xacro'])
 
     # Define the path to the rviz config file
     rviz_config_file = PathJoinSubstitution([dokalman_library_path, 'config', 'view_robot.rviz'])
 
-    # Load the content of the URDF file into the 'robot_description' parameter
-    robot_description_content = Command(['cat ', dokalman_urdf_file])
+    # Convert the XACRO file to URDF and load the content into the 'robot_description' parameter
+    robot_description_content = Command(['xacro ', dokalman_xacro_file])
     robot_description_param = ParameterValue(robot_description_content, value_type=str)
 
     # Define the nodes

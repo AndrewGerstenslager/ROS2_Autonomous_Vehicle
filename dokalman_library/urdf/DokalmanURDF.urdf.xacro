@@ -3,13 +3,26 @@
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot
-  name="robot">
+  name="DokalmanURDF">
+  <link name="base_link">
+
+  </link>
+
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="ChassisLink"/>
+    <origin xyz="1.0198E-15 0.007743 0" rpy="0 0 0"/>
+  </joint>
+
+
   <link
-    name="base_link">
+    name="ChassisLink">
     <inertial>
       <origin
         xyz="1.0198E-15 0.007743 0.042916"
         rpy="0 0 0" />
+      <parent
+        link="base_link" />
       <mass
         value="3.8804" />
       <inertia
@@ -24,9 +37,10 @@
       <origin
         xyz="0 0 0"
         rpy="0 0 0" />
+      
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/base_link.STL" />
+          filename="file://$(find dokalman_library)/meshes/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -40,7 +54,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/base_link.STL" />
+          filename="file://$(find dokalman_library)/meshes/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -66,7 +80,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/BackLeftWheelLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/BackLeftWheelLink.STL" />
       </geometry>
       <material
         name="">
@@ -80,13 +94,13 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/BackLeftWheelLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/BackLeftWheelLink.STL" />
       </geometry>
     </collision>
   </link>
   <joint
     name="BackLeftWheelJoint"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="-0.2427 -0.30175 -0.26683"
       rpy="0.81587 0 0" />
@@ -124,7 +138,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/BackRightWheelLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/BackRightWheelLink.STL" />
       </geometry>
       <material
         name="">
@@ -138,13 +152,13 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/BackRightWheelLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/BackRightWheelLink.STL" />
       </geometry>
     </collision>
   </link>
   <joint
     name="BackRightWheelJoint"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="0.2427 -0.30175 -0.26683"
       rpy="0.061644 0 0" />
@@ -182,7 +196,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/CasterLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/CasterLink.STL" />
       </geometry>
       <material
         name="">
@@ -196,18 +210,18 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/CasterLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/CasterLink.STL" />
       </geometry>
     </collision>
   </link>
   <joint
     name="CasterJoint"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="0 0.3302 -0.21908"
       rpy="1.5708 0 -0.01511" />
     <parent
-      link="base_link" />
+      link="ChassisLink" />
     <child
       link="CasterLink" />
     <axis
@@ -240,7 +254,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/FrontLeftWheelLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/FrontLeftWheelLink.STL" />
       </geometry>
       <material
         name="">
@@ -254,13 +268,13 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/FrontLeftWheelLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/FrontLeftWheelLink.STL" />
       </geometry>
     </collision>
   </link>
   <joint
     name="FrontLeftWheelJoint"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="-0.083806 -0.10265 0.10795"
       rpy="1.1883 0 0" />
@@ -298,7 +312,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/FrontRightWheelLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/FrontRightWheelLink.STL" />
       </geometry>
       <material
         name="">
@@ -312,13 +326,13 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dokalman_library/meshes/FrontRightWheelLink.STL" />
+          filename="file://$(find dokalman_library)/meshes/FrontRightWheelLink.STL" />
       </geometry>
     </collision>
   </link>
   <joint
     name="FrontRightWheelJoint"
-    type="revolute">
+    type="continuous">
     <origin
       xyz="0.083901 -0.10265 0.10795"
       rpy="-1.8971 0 0" />
