@@ -221,14 +221,14 @@
       xyz="0 0.3302 -0.21908"
       rpy="1.5708 0 -0.01511" />
     <parent
-      link="ChassisLink" />
+      link="base_link" />
     <child
       link="CasterLink" />
     <axis
       xyz="0 1 0" />
     <limit
-      lower="-1.57"
-      upper="1.57"
+      lower="0"
+      upper="3.1415"
       effort="1"
       velocity="1" />
   </joint>
