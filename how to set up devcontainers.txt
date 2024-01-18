@@ -32,9 +32,18 @@ sudo apt update && sudo apt upgrade
 sudo apt install dos2unix
 sudo apt install ros-$ROS_DISTRO-gazebo-ros-packages
 sudo apt install ros-$ROS_DISTRO-xacro
+git config --global core.autocrlf true
+
 
 Notes:
 
+the first line updates and upgrade all packages
+dos2unix is a good tool for using executables if there are issues outlined later
+get gazebo so you can run simulations
+xacro is also necessary as the robot is defined in it
+the git config line prevents you from updating every line from having windows line endings in the repo
+
+on dos2unix:
 I had an issue running a source.sh bash file because I got this error:
 '''
         vscode@docker-desktop:/dokalman/dokalman_library$ . source.sh 
@@ -55,6 +64,5 @@ I had an issue running a source.sh bash file because I got this error:
         ls: cannot access 'launch'$'\r': No such file or directory
         bash: $'\r': command not found
 '''
-
 This is due to the line endings being stored as a Windows format and the bash shell does not recognize this so I fixed it with 
-running the dos2unix command by running "sudo dos2unix source.sh" so it could be interpreted by bash
+running the dos2unix command by running "sudo dos2unix source.sh" so it could be interpreted by bash and executed correctly
