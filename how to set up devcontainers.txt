@@ -1,0 +1,60 @@
+Software required: 
+    - Docker Desktop or Docker
+    - WSL? (Probably)
+    - VS Code (Stop hating)
+
+Steps:
+Have Docker desktop open
+Open vscode
+Install the dev containers and the remote explorer extensions
+Open the remote explorer dialogue by clicking in the blue box in the bottom left corner
+    - do this inside whatever folder you'd like to make the workspace
+    - I pulled in the repo and made that the root dev folder
+
+In the dialogue select the option to "open folder in container"
+
+When prompted on the container of choice first select the option to "Show all definitions"
+Type in ROS and there will be an option for a container developed by ijnek
+
+**TODO: Make sure this step is fine (though with a simple ROS2 program like we have this should be okay)**
+Select the default options for release of ros2 and the type of release as well
+
+Ignore the next dialogue for additional optional stuff and just click "Okay"
+
+Let the container install and compile. This will be slow the first time but all future times will used cached data
+so you can have any number of folders with linked dev containers for this ros2 image and it will build quickly
+
+how to find ros distro:
+echo $ROS_DISTRO
+
+run the next lines to install required packages:
+sudo apt update && sudo apt upgrade
+sudo apt install dos2unix
+sudo apt install ros-$ROS_DISTRO-gazebo-ros-packages
+sudo apt install ros-$ROS_DISTRO-xacro
+
+Notes:
+
+I had an issue running a source.sh bash file because I got this error:
+'''
+        vscode@docker-desktop:/dokalman/dokalman_library$ . source.sh 
+        bash: $'\r': command not found
+        bash: cd: $'.\r': No such file or directory
+        bash: $'\r': command not found
+        : No such file or directoryash
+        bash: $'\r': command not found
+        usage: colcon [-h] [--log-base LOG_BASE] [--log-level LOG_LEVEL]
+                    {build,extension-points,extensions,graph,info,list,metadata,mixin,test,test-result,version-check} ...
+        colcon: error: argument verb_name: invalid choice: 'build\r' (choose from 'build', 'extension-points', 'extensions', 'graph', 'info', 'list', 'metadata', 'mixin', 'test', 'test-result', 'version-check')
+        : No such file or directory
+        bash: $'\r': command not found
+        EXECUTABLES:
+        usage: ros2 [-h] [--use-python-default-buffering] Call `ros2 <command> -h` for more detailed usage. ...
+        ros2: error: unrecognized arguments: 
+        LAUNCH FILES:
+        ls: cannot access 'launch'$'\r': No such file or directory
+        bash: $'\r': command not found
+'''
+
+This is due to the line endings being stored as a Windows format and the bash shell does not recognize this so I fixed it with 
+running the dos2unix command by running "sudo dos2unix source.sh" so it could be interpreted by bash
