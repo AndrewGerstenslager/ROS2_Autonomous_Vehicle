@@ -42,3 +42,6 @@ run lsusb and you will see the device listed now as an available device
 
 CURRENT ISSUE:
 how do I access the file path of the device? ls /dev does not give me a file path that I can use for the camera
+
+https://askubuntu.com/questions/1405903/capturing-webcam-video-with-opencv-in-wsl2
+https://github.com/PINTO0309/wsl2_linux_kernel_usbcam_enable_conf
