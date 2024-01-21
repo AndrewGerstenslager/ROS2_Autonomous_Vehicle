@@ -1,0 +1,44 @@
+if you type lsusb in the command line in wsl or in a linux-based docker container you will see that
+the usb devices from windows are not listed. This is not what we want because we want to be able to
+access and use data from devices like cameras or other things.
+
+Fix:
+https://www.youtube.com/watch?v=nBJoVkSftfw&ab_channel=ScottHanselman
+
+Summary:
+install the program usbipd for windows and set it up. you should be able to run it from the terminal/powershell
+run usbipd list to see the available devices
+determine what device you'd like to connect.
+Here is some example output:
+"""
+    PS C:\Users\andre> usbipd list
+    Connected:
+    BUSID  VID:PID    DEVICE                                                        STATE
+    1-2    1462:7e07  USB Input Device                                              Not shared
+    1-5    0db0:d1d7  Realtek USB Audio, USB Input Device                           Not shared
+    1-7    0416:e324  USB Input Device                                              Not shared
+    1-14   8087:0033  Intel(R) Wireless Bluetooth(R)                                Not shared
+    3-2    046d:08e5  HD Pro Webcam C920                                            Not shared
+    3-3    152a:8750  DX3 Pro+, Topping DFU                                         Not shared
+    6-2    0c76:161e  USB PnP Audio Device, USB Input Device                        Not shared
+    6-4    3297:1977  USB Input Device                                              Not shared
+    7-4    1e71:2007  USB Input Device                                              Not shared
+
+    Persisted:
+    GUID                                  DEVICE
+    26dde788-7181-455e-b2a8-f876535a86cb  USB Input Device
+    491a719e-0299-47f1-aff1-fad57c26ddd0  Xbox 360 Controller for Windows
+    ae9c7816-b4c8-43dd-a263-5dc40484b5b3  Xbox One Controller
+"""
+
+I chose the 3-2    046d:08e5  HD Pro Webcam C920 device for This
+
+I then run usbipd wsl attach --busid 3-2
+
+If things went correctly the device is shared to the WSL backend and subsequently the Docker engine.
+
+How to verify:
+run lsusb and you will see the device listed now as an available device
+
+CURRENT ISSUE:
+how do I access the file path of the device? ls /dev does not give me a file path that I can use for the camera
