@@ -29,12 +29,16 @@ RUN rosdep update
 # Source the ROS setup file
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 
-#Andrew added some stuff here
+# Andrew added some stuff here
 RUN git config --global core.autocrlf true
 RUN sudo apt install -y dos2unix
+RUN sudo apt-get install -y usbutils
 RUN sudo apt install -y ros-${ROS_DISTRO}-gazebo-ros-pkgs
 RUN sudo apt install -y ros-${ROS_DISTRO}-xacro
-
+RUN sudo apt-get install -y python3-pip
 
 # Update all packages
 RUN sudo apt update && sudo apt upgrade -y
+
+# Pip install all necessary packages
+RUN pip install numpy pandas opencv-python
