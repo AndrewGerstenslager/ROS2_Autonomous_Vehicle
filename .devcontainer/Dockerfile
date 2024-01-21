@@ -29,9 +29,12 @@ RUN rosdep update
 # Source the ROS setup file
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 
-RUN sudo apt update && sudo apt upgrade
-RUN sudo apt install dos2unix
-RUN sudo apt install iputils-ping
-RUN sudo apt install ros-$ROS_DISTRO-gazebo-ros-packages
-RUN sudo apt install ros-$ROS_DISTRO-xacro
+#Andrew added some stuff here
 RUN git config --global core.autocrlf true
+RUN sudo apt install -y dos2unix
+RUN sudo apt install -y ros-${ROS_DISTRO}-gazebo-ros-pkgs
+RUN sudo apt install -y ros-${ROS_DISTRO}-xacro
+
+
+# Update all packages
+RUN sudo apt update && sudo apt upgrade -y
