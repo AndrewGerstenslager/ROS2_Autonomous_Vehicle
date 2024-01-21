@@ -32,7 +32,9 @@ RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 # Andrew added some stuff here
 RUN git config --global core.autocrlf true
 RUN sudo apt install -y dos2unix
-RUN sudo apt-get install -y usbutils
+RUN sudo apt install -y usbutils
+RUN sudo apt install -y linux-tools-virtual hwdata
+
 RUN sudo apt install -y ros-${ROS_DISTRO}-gazebo-ros-pkgs
 RUN sudo apt install -y ros-${ROS_DISTRO}-xacro
 RUN sudo apt-get install -y python3-pip
