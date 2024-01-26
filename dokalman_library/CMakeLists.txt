@@ -33,7 +33,7 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  DIRECTORY config description launch worlds meshes urdf
+  DIRECTORY config launch worlds meshes urdf
   DESTINATION share/${PROJECT_NAME}
 )
 
