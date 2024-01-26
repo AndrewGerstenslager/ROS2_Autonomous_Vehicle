@@ -1,14 +1,28 @@
-#THIS IS A CUSTOM INITALIZATION FILE
-source /opt/ros/foxy/setup.bash
+#!/bin/bash
+
+#CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
+export PACKAGE_NAME='sparkfun_imu_node'
+
+source /opt/ros/${ROS_DISTRO}/setup.bash
 
 echo "BUILDING PACKAGE"
 colcon build
 echo "SOURCING PACKAGE"
-. install/local_setup.bash
+source install/setup.bash
 
 echo "PACKAGES BUILT:"
-ros2 pkg list | grep sparkfun_imu_node
-echo "DONE"
+ros2 pkg list | grep ${PACKAGE_NAME}
 
+# Check for executables
 echo "EXECUTABLES:"
-ros2 pkg executables sparkfun_imu_node    
+if ! ros2 pkg executables ${PACKAGE_NAME} | grep -q '.'; then
+    echo "None"
+fi
+
+# Check for launch files
+echo "LAUNCH FILES:"
+if [ -z "$(ls -A launch 2>/dev/null)" ]; then
+    echo "None"
+else
+    ls launch
+fi
