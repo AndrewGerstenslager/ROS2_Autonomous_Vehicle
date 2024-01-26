@@ -1,4 +1,6 @@
 #!/bin/bash
+#CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
+export PACKAGE_NAME='dokalman_library'
 
 # Function to print in red
 print_red() {
@@ -9,9 +11,6 @@ print_red() {
 print_blue() {
     echo -e "\033[0;34m$1\033[0m"
 }
-
-#CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
-export PACKAGE_NAME='dokalman_library'
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
