@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="DokalmanURDF">
+  <link name="base_link">
+
+  </link>
+
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="ChassisLink"/>
+    <origin xyz="1.0198E-15 0.007743 0" rpy="0 0 0"/>
+  </joint>
+
+
+  <link
+    name="ChassisLink">
+    <inertial>
+      <origin
+        xyz="1.0198E-15 0.007743 0.042916"
+        rpy="0 0 0" />
+      <parent
+        link="base_link" />
+      <mass
+        value="3.8804" />
+      <inertia
+        ixx="0.46922"
+        ixy="-6.415E-16"
+        ixz="2.3178E-16"
+        iyy="0.43543"
+        iyz="-0.0081395"
+        izz="0.28753" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="BackLeftWheelLink">
+    <inertial>
+      <origin
+        xyz="-0.020955 0 0.0015468"
+        rpy="0 0 0" />
+      <mass
+        value="2.9916" />
+      <inertia
+        ixx="0.035119"
+        ixy="-2.2673E-21"
+        ixz="-8.072E-21"
+        iyy="0.017802"
+        iyz="-8.6736E-19"
+        izz="0.018192" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/BackLeftWheelLink.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/BackLeftWheelLink.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="BackLeftWheelJoint"
+    type="continuous">
+    <origin
+      xyz="-0.2427 -0.30175 -0.26683"
+      rpy="0.81587 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="BackLeftWheelLink" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="0"
+      upper="3.1415"
+      effort="1"
+      velocity="1" />
+  </joint>
+  <link
+    name="BackRightWheelLink">
+    <inertial>
+      <origin
+        xyz="0.020955 0 0.0015468"
+        rpy="0 0 0" />
+      <mass
+        value="2.9916" />
+      <inertia
+        ixx="0.035119"
+        ixy="3.9353E-22"
+        ixz="1.4357E-20"
+        iyy="0.017802"
+        iyz="8.6736E-19"
+        izz="0.018192" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/BackRightWheelLink.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/BackRightWheelLink.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="BackRightWheelJoint"
+    type="continuous">
+    <origin
+      xyz="0.2427 -0.30175 -0.26683"
+      rpy="0.061644 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="BackRightWheelLink" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="0"
+      upper="3.1415"
+      effort="1"
+      velocity="1" />
+  </joint>
+  <link
+    name="CasterLink">
+    <inertial>
+      <origin
+        xyz="-3.3827E-17 -0.036462 0.035808"
+        rpy="0 0 0" />
+      <mass
+        value="0.37248" />
+      <inertia
+        ixx="0.0013774"
+        ixy="-4.142E-19"
+        ixz="-2.5987E-18"
+        iyy="0.0026235"
+        iyz="0.0003954"
+        izz="0.0020896" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/CasterLink.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/CasterLink.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="CasterJoint"
+    type="continuous">
+    <origin
+      xyz="0 0.3302 -0.21908"
+      rpy="1.5708 0 -0.01511" />
+    <parent
+      link="base_link" />
+    <child
+      link="CasterLink" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="3.1415"
+      effort="1"
+      velocity="1" />
+  </joint>
+  <link
+    name="FrontLeftWheelLink">
+    <inertial>
+      <origin
+        xyz="-0.024699 9.992E-16 0.0012083"
+        rpy="0 0 0" />
+      <mass
+        value="1.1605" />
+      <inertia
+        ixx="0.0053422"
+        ixy="-4.0996E-19"
+        ixz="1.3248E-18"
+        iyy="0.0028032"
+        iyz="5.421E-20"
+        izz="0.0028787" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/FrontLeftWheelLink.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/FrontLeftWheelLink.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FrontLeftWheelJoint"
+    type="continuous">
+    <origin
+      xyz="-0.083806 -0.10265 0.10795"
+      rpy="1.1883 0 0" />
+    <parent
+      link="CasterLink" />
+    <child
+      link="FrontLeftWheelLink" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="0"
+      upper="3.1415"
+      effort="1"
+      velocity="1" />
+  </joint>
+  <link
+    name="FrontRightWheelLink">
+    <inertial>
+      <origin
+        xyz="0.024604 5.5511E-17 0.0012083"
+        rpy="0 0 0" />
+      <mass
+        value="1.1605" />
+      <inertia
+        ixx="0.0053422"
+        ixy="9.8595E-19"
+        ixz="-2.3632E-19"
+        iyy="0.0028032"
+        iyz="0"
+        izz="0.0028787" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/FrontRightWheelLink.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find dokalman_library)/meshes/FrontRightWheelLink.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FrontRightWheelJoint"
+    type="continuous">
+    <origin
+      xyz="0.083901 -0.10265 0.10795"
+      rpy="-1.8971 0 0" />
+    <parent
+      link="CasterLink" />
+    <child
+      link="FrontRightWheelLink" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="0"
+      upper="3.1415"
+      effort="1"
+      velocity="1" />
+  </joint>
+</robot>
