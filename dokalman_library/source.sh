@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Function to print in red
+print_red() {
+    echo -e "\033[0;31m$1\033[0m"
+}
+
+# Function to print in blue
+print_blue() {
+    echo -e "\033[0;34m$1\033[0m"
+}
+
 #CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
 export PACKAGE_NAME='dokalman_library'
 
@@ -7,24 +17,24 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 source /opt/ros/${ROS_DISTRO}/setup.bash
 
-echo "BUILDING PACKAGE"
+print_blue "BUILDING PACKAGE"
 colcon build
-echo "SOURCING PACKAGE"
+print_blue "SOURCING PACKAGE"
 source install/setup.bash
 
-echo "PACKAGES BUILT:"
+print_blue "PACKAGES BUILT:"
 ros2 pkg list | grep ${PACKAGE_NAME}
 
 # Check for executables
-echo "EXECUTABLES:"
+print_blue "EXECUTABLES:"
 if ! ros2 pkg executables ${PACKAGE_NAME} | grep -q '.'; then
-    echo "None"
+    print_red "None"
 fi
 
 # Check for launch files
-echo "LAUNCH FILES:"
+print_blue "LAUNCH FILES:"
 if [ -z "$(ls -A launch 2>/dev/null)" ]; then
-    echo "None"
+    print_red "None"
 else
     ls launch
 fi
