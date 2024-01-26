@@ -1,4 +1,4 @@
-FROM osrf/ros:rolling-desktop
+FROM osrf/ros:foxy-desktop
 
 # Add vscode user with same UID and GID as your host system
 # (copied from https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user#_creating-a-nonroot-user)
@@ -29,9 +29,12 @@ RUN rosdep update
 # Source the ROS setup file
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 
+# Update all packages
+RUN sudo apt update && sudo apt upgrade -y
+
 # Andrew added some stuff here
 RUN git config --global core.autocrlf true
-RUN sudo apt install -y dos2unix
+RUN sudo apt-get install -y dos2unix
 RUN sudo apt install -y usbutils
 RUN sudo apt install -y linux-tools-virtual hwdata
 

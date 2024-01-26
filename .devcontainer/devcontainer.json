@@ -1,10 +1,9 @@
 {
-  "name": "rolling desktop",
+  "name": "foxy desktop",
   "dockerFile": "Dockerfile",
   "runArgs": [
     "--privileged",
-    "--net=host",
-    "--ipc=host"
+    "--network=host"
   ],
   "workspaceMount": "source=${localWorkspaceFolder},target=/${localWorkspaceFolderBasename},type=bind",
   "workspaceFolder": "/${localWorkspaceFolderBasename}",
