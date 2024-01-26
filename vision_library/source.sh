@@ -1,4 +1,4 @@
-source /opt/ros/foxy/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 
 colcon build
 . install/setup.bash

@@ -4,7 +4,7 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # THIS IS A CUSTOM INITIALIZATION FILE
-#source /opt/ros/foxy/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 
 colcon build
 source install/setup.bash
