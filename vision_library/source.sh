@@ -1,6 +1,9 @@
 #!/bin/bash
-#CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
+
+# CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
 export PACKAGE_NAME='cpp_image_processing'
+# ADD LINE BELOW TO DEFINE THE PACKAGE TYPE
+export PACKAGE_TYPE='cpp' # 'cpp' or 'python' depending on your package
 
 # Function to print in red
 print_red() {
@@ -24,14 +27,22 @@ ros2 pkg list | grep ${PACKAGE_NAME}
 
 # Check for executables
 print_blue "EXECUTABLES:"
-if ! ros2 pkg executables ${PACKAGE_NAME} | grep -q '.'; then
+EXECUTABLES=$(ros2 pkg executables ${PACKAGE_NAME})
+if [ -z "$EXECUTABLES" ]; then
     print_red "None"
+else
+    echo "$EXECUTABLES"
 fi
 
 # Check for launch files
 print_blue "LAUNCH FILES:"
-if [ -z "$(ls -A launch 2>/dev/null)" ]; then
+LAUNCH_DIR="src/${PACKAGE_NAME}/launch" # Default path for C++ packages
+if [ "${PACKAGE_TYPE}" = "python" ]; then
+    LAUNCH_DIR="launch" # Adjust path for Python packages if necessary
+fi
+
+if [ -z "$(ls -A ${LAUNCH_DIR} 2>/dev/null)" ]; then
     print_red "None"
 else
-    ls launch
+    ls ${LAUNCH_DIR}
 fi
