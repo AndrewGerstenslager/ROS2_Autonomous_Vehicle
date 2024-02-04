@@ -1,2 +1,0 @@
-libraries
-motor_control
