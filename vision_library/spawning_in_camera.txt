@@ -1,0 +1,208 @@
+tutorial
+https://medium.com/@arshad.mehmood/camera-calibration-in-gazebo-ros2-6bed2620a652
+
+repo to look in
+https://github.com/arshadlab/camera_calibration/tree/main
+
+medium text
+
+Camera calibration in Gazebo ROS2
+Arshad Mehmood
+Arshad Mehmood
+
+·
+Follow
+
+6 min read
+·
+Sep 30, 2022
+1
+`
+
+Accurate camera is critical for efficient perception and visualization tasks. Like other sensors, camera also need to be calibrated to correct any distortions and errors removal from coordinate transformation. For example, concluding object location from Aruco marker detection requires camera to be well calibrated. A calibration means figuring out parameters used for transformation and distortion correction.
+
+This article will provide a guide on calibrating virtual camera inside Gazebo. It relies on camera calibration app from image_pipeline github repo. The work is similar to what’s described in Nav2 tutorial but uses images from camera in Gazebo instead of real camera. I have included bash script to invoke checkerboard movements via ros2 service exposed by plugin.
+
+Overall flow:
+
+Install required packages
+Either Install camera calibration debian package (and manually fix the bug in installed python script) OR build camera calibration app from source.
+Start Gazebo with plugins and spawn camera and checkerboard via command line.
+Start camera calibration app
+Run bash script to initiate checkerboard movements using ros2 service.
+Prerequisite:
+
+This tutorial is based on Ubuntu 20.04 and with ROS2 Foxy installed.
+
+Foxy installation instructions here.
+
+
+Camera Calibration App
+I will not go into detail on calibrated parameters and their meaning. A short version below taken from ros2 documentation.
+
+https://docs.ros2.org/foxy/api/sensor_msgs/msg/CameraInfo.html
+
+# The distortion parameters, size depending on the distortion model.
+# For "plumb_bob", the 5 parameters are: (k1, k2, t1, t2, k3).
+float64[] D
+
+# Intrinsic camera matrix for the raw (distorted) images.
+#     [fx  0 cx]
+# K = [ 0 fy cy]
+#     [ 0  0  1]
+# Projects 3D points in the camera coordinate frame to 2D pixel
+# coordinates using the focal lengths (fx, fy) and principal point
+# (cx, cy).
+float64[9]  K # 3x3 row-major matrix
+
+# Rectification matrix (stereo cameras only)
+# A rotation matrix aligning the camera coordinate system to the ideal
+# stereo image plane so that epipolar lines in both stereo images are
+# parallel.
+float64[9]  R # 3x3 row-major matrix
+
+# Projection/camera matrix
+#     [fx'  0  cx' Tx]
+# P = [ 0  fy' cy' Ty]
+#     [ 0   0   1   0]
+# By convention, this matrix specifies the intrinsic (camera) matrix
+#  of the processed (rectified) image. That is, the left 3x3 portion
+#  is the normal camera intrinsic matrix for the rectified image.
+# It projects 3D points in the camera coordinate frame to 2D pixel
+#  coordinates using the focal lengths (fx', fy') and principal point
+#  (cx', cy') - these may differ from the values in K.
+# For monocular cameras, Tx = Ty = 0. Normally, monocular cameras will
+#  also have R = the identity and P[1:3,1:3] = K.
+# For a stereo pair, the fourth column [Tx Ty 0]' is related to the
+#  position of the optical center of the second camera in the first
+#  camera's frame. We assume Tz = 0 so both cameras are in the same
+#  stereo image plane. The first camera always has Tx = Ty = 0. For
+#  the right (second) camera of a horizontal stereo pair, Ty = 0 and
+#  Tx = -fx' * B, where B is the baseline between the cameras.
+# Given a 3D point [X Y Z]', the projection (x, y) of the point onto
+#  the rectified image is given by:
+#  [u v w]' = P * [X Y Z 1]'
+#         x = u / w
+#         y = v / w
+#  This holds for both images of a stereo pair.
+float64[12] P # 3x4 row-major matrix
+Setup
+ROS2 nav2 has well written instructions for performing camera calibration with real camera. Basic flow is taken from there but replaced real camera setup with gazebo based virtual camera and it’s movement for calibration.
+
+Install dependent packages
+
+# Replace <ros2-distro> with ros distribution flavor. e.g foxy
+sudo apt install ros-<ros2-distro>-camera-calibration-parsers
+sudo apt install ros-<ros2-distro>-camera-info-manager
+sudo apt install ros-<ros2-distro>-launch-testing-ament-cmake
+Camera calibration package
+Install via apt-get
+
+Camera calibration framework comes from image_pipeline repository. It can be installed via apt-get however the python script that comes with debian package has bug which is fixed in github source.
+
+sudo apt install ros-<ros2-distro>-camera-calibration
+e.g sudo apt install ros-foxy-camera-calibration
+Once installed, manually merge this simple fix into the files in directory /opt/ros/foxy/lib/pythonxxx/site-packages/camera_calibration/nodes/
+
+Fix -> https://github.com/ros-perception/image_pipeline/pull/597/files
+
+Build from Source
+
+# clone repo in workspace
+mkdir -p ros2_ws/src
+cd ros2_ws/src
+git clone git@github.com:ros-perception/image_pipeline.git -b foxy
+cd ..
+# source ros2 environment if haven't done yet
+source /opt/ros/foxy/setup.bash
+# issue build command in ros2_ws directory
+colcon build --symlink-install
+Once the package is build, source it to environment.
+
+source ./install/setup.sh
+Now the camera calibration framework is ready. Let’s setup Gazebo project.
+
+Clone repo locally which is a collection of model files and bash scripts.
+
+git clone https://github.com/arshadlab/camera_calibration.git
+Install gazebo ros package providing most of plugins used in this tutorial.
+
+sudo apt-get install ros-foxy-gazebo-ros-pkgs
+Plugins used in this guide along with their exposed services.
+
+
+Run ./setup_env.sh script to launch related apps and scripts.
+
+# start Gazebo with plugins
+gazebo -s libgazebo_ros_factory.so -s libgazebo_ros_init.so -s libgazebo_ros_state.so empty.world &
+sleep 3
+# spawn camera at 0.6m height
+ros2 run gazebo_ros spawn_entity.py -file ./camera.urdf -entity camera1  -x 0.0 -y 0.0 -z 0.6 -unpause
+sleep 1
+#spawn checkerboard at 0.4m height
+ros2 run gazebo_ros spawn_entity.py -file ./checkerboard/checkerboard.sdf  -entity checkerboard  -x 0.0 -y 0.0 -z 0.4 -unpause
+sleep 1
+#run cameracalibrator
+ros2 run camera_calibration cameracalibrator --no-service-check -p checkerboard --size 8x6 --square 0.02 --ros-args -r image:=/camera1/image_raw -p camera:=/camera1 &
+
+Camera and checkerbox spawned
+The cameracalibrator command will look for checkerboard with 8x6 inner corners and having each box with size .02 meter (20 mm). It will subscribe to /camera1/image_raw topic to acquire images.
+
+
+Camera Calibration app output
+Now run the calibrate.sh script which send ROS2 service calls to Gazebo to change checkerboard poses at different angles and positions.
+
+./calibrate.sh
+calibrate.sh contents:
+
+for x in 0.0 0.09987 -0.1111
+do
+  for y in 0.0 0.1421 -0.1404
+  do
+     for z in 0.1 0.3 0.35
+     do
+        for skew in 0.0 -0.2 0.2
+        do
+             # pause gazebo before calling set_entity_state service .  Apparently setting entity state doesn't work reliablity with gazebo in running mode
+             ros2 service call /pause_physics 'std_srvs/srv/Empty' {""}
+             ros2 service call /set_entity_state gazebo_msgs/SetEntityState "{state: { name: 'checkerboard', pose: {position: {x: $x, y: $y, z: $z}, orientation: {x: $skew, y: $skew, z: $skew}}, reference_frame: world}}"
+             ros2 service call /unpause_physics 'std_srvs/srv/Empty' {""}
+             sleep .8
+         done
+     done     
+  done
+done
+Coordinate and distance given in above script is specific to this scenario and should be modified and if used in other places.
+
+Overall, the images with checker board at 4 corners, some skewed poses and at different sizes will be sufficient to get basic calibration. The script tries to achieve that.
+
+
+Different poses
+Once enough data gathered, the CALIBRATE button will be enabled. All the four parameter lines will be completed and/or turn to green.
+
+
+Click on Calibrate button to generate parameters values in console. Save button will dump data into /tmp/calibrationdata.tar.gz
+
+
+Calibration console output
+calibrationdata.tar.gz will contain images with checkerboard poses that contributed to data points, a yaml and txt file with calibrated data.
+
+Manually moving checkerboard to improve calibration data
+
+Beside running script for auto pose generation, we can manually control checkerboard poses within Gazebo GUI. This to improve accuracy.
+
+Translation button invokes mode allowing checkerboard movement in x, y or z directions. Select the object to translate after clicking button.
+
+
+Gazebo translation mode
+Rotation mode allows rotating selected object.
+
+
+Gazebo rotation mode
+References:
+
+https://navigation.ros.org/tutorials/docs/camera_calibration.html
+https://calib.io/blogs/knowledge-base/camera-models
+https://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
+1
+
