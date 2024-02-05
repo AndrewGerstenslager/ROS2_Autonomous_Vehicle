@@ -39,7 +39,7 @@ RUN sudo apt install -y usbutils
 RUN sudo apt install -y linux-tools-virtual hwdata
 RUN sudo apt install -y net-tools
 RUN sudo apt install -y iputils-ping
-
+RUN sudo apt install -y x11-apps
 RUN sudo apt install -y ros-${ROS_DISTRO}-gazebo-ros-pkgs
 RUN sudo apt install -y ros-${ROS_DISTRO}-xacro
 RUN sudo apt-get install -y python3-pip
