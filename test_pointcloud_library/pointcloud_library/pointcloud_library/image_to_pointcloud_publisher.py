@@ -9,7 +9,7 @@ import cv2
 class ImageToPCDPublisher(Node):
     def __init__(self):
         super().__init__('image_to_pcd_publisher')
-        self.declare_parameter('scale', 1.0)  # Declare a parameter for scaling
+        self.declare_parameter('scale', 1/255)  # Declare a parameter for scaling
         
         # Initialize the CvBridge
         self.bridge = CvBridge()
