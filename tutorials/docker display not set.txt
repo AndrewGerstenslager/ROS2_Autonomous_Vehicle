@@ -1,0 +1,24 @@
+if you set up the dev container and run xclock or xeyes and get the error:
+"Error: Can't open display:"
+
+Try to run:
+echo $DISPLAY
+
+and see if the output is empty or not. If it is empty you will have to:
+
+install an XServer for windows (https://sourceforge.net/projects/vcxsrv/)
+
+- Run the XServer:
+    - find the location of the downloaded program
+    - run the XLaunch program
+        - Display Settings: Multiple windows
+        - Client Startup: Start no Client
+        - Extra Settings: All settings checked
+        - Hit Finish
+- Open up the terminal and run linux
+    - In that terminal run: export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
+    - When you run echo $DISPLAY you should see something like: 172.26.128.1:0 if it ran correctly
+- Rebuild the docker container in VSCode
+- In the .devcontainer/devcontainer.json the parameter for "DISPLAY": "host.docker.internal:0" should hopefully fix it
+- You can verify that it worked by running in the docker terminal echo $DISPLAY and see the same thing show up as before
+- Run xeyes or xclock and hopefully the issue is resolved

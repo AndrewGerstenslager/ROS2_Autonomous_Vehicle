@@ -1,6 +1,9 @@
 #!/bin/bash
-#CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
+
+# CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
 export PACKAGE_NAME='dokalman_library'
+# ADD LINE BELOW TO DEFINE THE PACKAGE TYPE
+export PACKAGE_TYPE='python' # 'cpp' or 'python' depending on your package
 
 # Function to print in red
 print_red() {
@@ -11,8 +14,6 @@ print_red() {
 print_blue() {
     echo -e "\033[0;34m$1\033[0m"
 }
-
-cd "$(dirname "${BASH_SOURCE[0]}")"
 
 source /opt/ros/${ROS_DISTRO}/setup.bash
 
@@ -26,17 +27,22 @@ ros2 pkg list | grep ${PACKAGE_NAME}
 
 # Check for executables
 print_blue "EXECUTABLES:"
-if ! ros2 pkg executables ${PACKAGE_NAME} | grep -q '.'; then
+EXECUTABLES=$(ros2 pkg executables ${PACKAGE_NAME})
+if [ -z "$EXECUTABLES" ]; then
     print_red "None"
+else
+    echo "$EXECUTABLES"
 fi
 
 # Check for launch files
 print_blue "LAUNCH FILES:"
-if [ -z "$(ls -A launch 2>/dev/null)" ]; then
-    print_red "None"
-else
-    ls launch
+LAUNCH_DIR="src/${PACKAGE_NAME}/launch" # Default path for C++ packages
+if [ "${PACKAGE_TYPE}" = "python" ]; then
+    LAUNCH_DIR="launch" # Adjust path for Python packages if necessary
 fi
 
-# Append to GAZEBO_MODEL_PATH. Adjust the path as necessary.
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:$(pwd)/worlds/gazebo_worlds/models
+if [ -z "$(ls -A ${LAUNCH_DIR} 2>/dev/null)" ]; then
+    print_red "None"
+else
+    ls ${LAUNCH_DIR}
+fi

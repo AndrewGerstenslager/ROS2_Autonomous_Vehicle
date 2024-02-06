@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
-export PACKAGE_NAME='cpp_image_processing'
+export PACKAGE_NAME='basic_navigation'
 # ADD LINE BELOW TO DEFINE THE PACKAGE TYPE
-export PACKAGE_TYPE='cpp' # 'cpp' or 'python' depending on your package
+export PACKAGE_TYPE='python' # 'cpp' or 'python' depending on your package
 
 # Function to print in red
 print_red() {
