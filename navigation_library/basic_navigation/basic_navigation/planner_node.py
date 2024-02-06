@@ -21,6 +21,7 @@ class WaypointPlanner(Node):
 
     def gps_callback(self, msg):
         # Logic to check if current waypoint is reached and to publish the next waypoint
+        # Finish the logic here
         pass
 
     def load_waypoints(self, file_path):
