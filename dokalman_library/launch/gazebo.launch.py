@@ -54,5 +54,5 @@ def generate_launch_description():
         models_var,
         rsp,
         spawn_entity,
-        rviz_node,
+        #rviz_node,
     ])
