@@ -41,9 +41,6 @@ ament_target_dependencies(image_skew rclcpp std_msgs sensor_msgs cv_bridge image
 add_executable(image_to_pointcloud src/image_to_pointcloud.cpp)
 ament_target_dependencies(image_to_pointcloud rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV pcl_conversions geometry_msgs)
 
-add_executable(calibrate_camera_feed src/calibrate_camera_feed.cpp)
-ament_target_dependencies(calibrate_camera_feed rclcpp sensor_msgs image_transport cv_bridge OpenCV)
-
 # install packages
 install(TARGETS
   static_feed
@@ -51,7 +48,6 @@ install(TARGETS
   image_threshold
   image_skew
   image_to_pointcloud
-  calibrate_camera_feed
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch
