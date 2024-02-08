@@ -7,6 +7,10 @@ import numpy as np
 import cv2
 
 class ImageToPCDPublisher(Node):
+    """
+    A class that converts an image to a PointCloud2 message and publishes it.
+    """
+
     def __init__(self):
         super().__init__('image_to_pcd_publisher')
         self.declare_parameter('scale', 1/255)  # Declare a parameter for scaling
@@ -26,6 +30,13 @@ class ImageToPCDPublisher(Node):
         self.pcd_publisher = self.create_publisher(PointCloud2, 'pcd', 10)
 
     def image_callback(self, msg):
+        """
+        Callback function for the image topic subscription.
+        Converts the received image to a PointCloud2 message and publishes it.
+        
+        Parameters:
+            msg (sensor_msgs.msg.Image): The ROS Image message containing the image data.
+        """
         # Convert the ROS Image message to a CV image
         cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='passthrough')
         
@@ -48,8 +59,17 @@ class ImageToPCDPublisher(Node):
         # Publish the PointCloud2
         self.pcd_publisher.publish(pcd)
 
-    def create_point_cloud(self, points, parent_frame):
-        # Function to create a PointCloud2 message from numpy array
+    def create_point_cloud(self, points, parent_frame) -> PointCloud2:
+        """
+        Function to create a PointCloud2 message from a numpy array of points.
+        
+        Parameters:
+            points (numpy.ndarray): The array of 3D points.
+            parent_frame (str): The frame ID of the parent coordinate frame.
+        
+        Returns:
+            sensor_msgs.msg.PointCloud2: The PointCloud2 message.
+        """
         header = std_msgs.Header(frame_id=parent_frame)
         fields = [PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
                   PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),

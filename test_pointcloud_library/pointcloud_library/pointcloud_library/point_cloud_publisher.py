@@ -10,6 +10,12 @@ import numpy as np
 # import open3d as o3d  # Not needed for line generation
 
 class PCDPublisher(Node):
+    """
+    A class for publishing point cloud data.
+
+    This class creates a publisher for publishing point cloud data as a sensor_msgs.PointCloud2 message.
+    It generates line points from (0, 0, 0) to (1, 0, 0) with 100 points and publishes them at a specified rate.
+    """
 
     def __init__(self):
         super().__init__('pcd_publisher_node')
@@ -26,6 +32,12 @@ class PCDPublisher(Node):
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
     def timer_callback(self):
+        """
+        Timer callback function.
+
+        This function is called at a specified rate and converts the numpy array of points to a sensor_msgs.PointCloud2
+        object. It then publishes the PointCloud2 object using the created publisher.
+        """
         # Convert the numpy array to a sensor_msgs.PointCloud2 object
         self.pcd = point_cloud(self.points, 'base_link')
         # Publish the PointCloud2 object
@@ -89,3 +101,4 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
