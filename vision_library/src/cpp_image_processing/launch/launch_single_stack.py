@@ -26,11 +26,14 @@ def generate_launch_description():
                         {'published_topic': 'img_processed'},
                         {"threshold_value":180}] #[0,255] The higher the number the more exact color it has to be
         ),
-        #Node(
-        #    package='cpp_image_processing',
-        #    executable='image_to_pointcloud',
-        #    name='image_to_pointcloud',
-        #    parameters=[{'subscribed_topic': 'img_processed'},
-        #                {'published_topic': 'my_pointcloud'}]
-        #),
+
+        Node(
+            package='cpp_image_processing',
+            executable='image_to_pointcloud',
+            parameters=[
+                {'scale': 1.0 / 255.0},
+                {'input_topic': 'img_processed'},
+                {'output_topic': 'pcd'}
+            ]
+        )
     ])
