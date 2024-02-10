@@ -19,10 +19,13 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 
-# Add your executable
 add_executable(caster_joint_publisher src/caster_joint_publisher.cpp)
 ament_target_dependencies(caster_joint_publisher rclcpp sensor_msgs)
+
+add_executable(heading_publisher src/gazebo_publish_robot_heading.cpp)
+ament_target_dependencies(heading_publisher rclcpp nav_msgs)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -37,6 +40,7 @@ install(
 # Install your executable
 install(TARGETS
   caster_joint_publisher
+  heading_publisher
   DESTINATION lib/${PROJECT_NAME}
 )
 

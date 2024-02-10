@@ -47,11 +47,19 @@ def generate_launch_description():
         output='screen',
     )
 
+    # Create a heading_publisher node
+    odom_heading_node = Node(
+    package='dokalman_library',
+    executable='heading_publisher',
+    output='screen',
+)
+
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false', description='Use sim time if true'),
         models_var,
         gazebo,
         spawn_entity,
         robot_state_publisher,
-        caster_joint_publisher,  # add this line
+        caster_joint_publisher,
+        odom_heading_node,
     ])
