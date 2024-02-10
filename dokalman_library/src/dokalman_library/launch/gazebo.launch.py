@@ -52,7 +52,7 @@ def generate_launch_description():
     package='dokalman_library',
     executable='heading_publisher',
     output='screen',
-)
+    )
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false', description='Use sim time if true'),
