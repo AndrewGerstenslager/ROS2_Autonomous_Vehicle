@@ -5,5 +5,6 @@
     ],
     "cmake.sourceDirectory": "/home/ubuntu/repo/dokalman/dokalman_library/src/dokalman",
     "python.formatting.provider": "black",
-    "ros.distro": "foxy"
+    "ros.distro": "foxy",
+    "C_Cpp.errorSquiggles": "disabled"
 }

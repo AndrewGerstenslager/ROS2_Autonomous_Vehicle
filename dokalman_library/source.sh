@@ -18,7 +18,7 @@ print_blue() {
 source /opt/ros/${ROS_DISTRO}/setup.bash
 
 print_blue "BUILDING PACKAGE"
-colcon build
+colcon build --parallel-workers $(nproc)
 print_blue "SOURCING PACKAGE"
 source install/setup.bash
 

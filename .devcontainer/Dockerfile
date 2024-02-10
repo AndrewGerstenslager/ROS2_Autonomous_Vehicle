@@ -42,10 +42,13 @@ RUN sudo apt install -y iputils-ping
 RUN sudo apt install -y x11-apps
 RUN sudo apt install -y ros-${ROS_DISTRO}-gazebo-ros-pkgs
 RUN sudo apt install -y ros-${ROS_DISTRO}-xacro
-RUN sudo apt-get install -y python3-pip
+RUN sudo apt install -y ros-${ROS_DISTRO}-tf-transformations
+RUN sudo apt install -y ros-${ROS_DISTRO}-joint-state-publisher
+
+RUN sudo apt install -y python3-pip
 
 # Update all packages
 RUN sudo apt update && sudo apt upgrade -y
 
 # Pip install all necessary packages
-RUN pip install numpy pandas opencv-python
+RUN pip install numpy pandas opencv-python transforms3d geopy
