@@ -10,6 +10,8 @@
 
 class ImageToPCDPublisher : public rclcpp::Node
 {
+cv::Mat rot_mat;
+float trans_x,trans_y,yaw;
 public:
     ImageToPCDPublisher()
     : Node("image_to_pcd_publisher")
@@ -17,10 +19,16 @@ public:
         this->declare_parameter<float>("scale", 1.0f / 255.0f);
         this->declare_parameter<std::string>("input_topic", "/img_processed");
         this->declare_parameter<std::string>("output_topic", "pcd");
-        
+        this->declare_parameter<float>("yaw", 0.0f);
+        this->declare_parameter<float>("trans_x",0.0f);
+        this->declare_parameter<float>("trans_y",0.0f);
+
         std::string input_topic = this->get_parameter("input_topic").as_string();
         std::string output_topic = this->get_parameter("output_topic").as_string();
-        
+        yaw=this->get_parameter("yaw").as_double();
+        trans_x=this->get_parameter("trans_x").as_double();
+        trans_y=this->get_parameter("trans_y").as_double();
+
         subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
             input_topic,
             10,
@@ -30,6 +38,14 @@ public:
     }
 
 private:
+    cv:: Mat rotate_image(cv::Mat source, float angle)
+    {
+        cv::Point2f center((source.cols - 1) / 2.0, (source.rows - 1) / 2.0);
+        cv::Mat rotation_matix = getRotationMatrix2D(center, angle, 1.0);
+        cv::Mat rotated_image;
+        cv::warpAffine(source, rotated_image, rotation_matix, source.size());
+        return rotated_image;
+    }
     void image_callback(const sensor_msgs::msg::Image::SharedPtr msg)
     {
         cv_bridge::CvImagePtr cv_ptr;
@@ -45,7 +61,15 @@ private:
 
         cv::Mat &cv_image = cv_ptr->image;
 
+        //Rotating cloudpoints is hard man so rotate image instead.
+        //Potential issue: rotated image may be cropped
+        cv_image=rotate_image(cv_image,yaw);
+        //Mirror image since point cloud of original image is mirrored
+        cv::flip(cv_image, cv_image, 1);
+
         std::vector<cv::Point2f> points;
+        cv::Point2f original_point;
+
         for (int y = 0; y < cv_image.rows; y++)
         {
             for (int x = 0; x < cv_image.cols; x++)
@@ -54,7 +78,18 @@ private:
                 {
                     float scale = static_cast<float>(this->get_parameter("scale").as_double());
 
-                    points.push_back(cv::Point2f(x * scale, y * scale));
+                    //points.push_back(cv::Point2f(x * scale, y * scale));
+
+                    original_point=cv::Point2f(x * scale, y * scale);
+                    //Translate
+                    original_point.x += trans_x;
+                    original_point.y += trans_y;
+                    // Apply rotation to the point
+                    cv::Point2f rotated_point;
+                    //cv::transform(std::vector<cv::Point2f>{original_point}, std::vector<cv::Point2f>{rotated_point}, rot_mat);
+                    rotated_point=original_point;
+
+                    points.push_back(original_point);
                 }
             }
         }
@@ -90,6 +125,7 @@ private:
 
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
+    cv::Mat rotation_matrix_;
 };
 
 int main(int argc, char **argv)
