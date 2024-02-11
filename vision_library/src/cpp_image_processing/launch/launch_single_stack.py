@@ -1,13 +1,17 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
 import math
+
 def generate_launch_description():    
     nodes=[]
-    nodes+=process_image('right_camera/image_raw','right',180.0+70.0,-10.74,-2.1) 
-    nodes+=process_image('left_camera/image_raw','left',180.0-70.0,-2.2,-4.4)
+    nodes+=process_image('right_camera/image_raw','right',180.0+63.0,-10.36,-2.1) 
+    nodes+=process_image('left_camera/image_raw','left',180.0-68.0,-2.2,-4.4)
+    nodes+=process_image('front_camera/image_raw','front',180.0,-5.7,-0.8)
+    
     return LaunchDescription(
         nodes
     )
+    
 #positive yaw means counter-clockwise
 def process_image(camera,name,yaw,trans_x,trans_y):
     skew_topic=name+'_img_skewed'

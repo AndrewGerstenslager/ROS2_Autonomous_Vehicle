@@ -78,16 +78,10 @@ private:
                 {
                     float scale = static_cast<float>(this->get_parameter("scale").as_double());
 
-                    //points.push_back(cv::Point2f(x * scale, y * scale));
-
                     original_point=cv::Point2f(x * scale, y * scale);
                     //Translate
                     original_point.x += trans_x;
                     original_point.y += trans_y;
-                    // Apply rotation to the point
-                    cv::Point2f rotated_point;
-                    //cv::transform(std::vector<cv::Point2f>{original_point}, std::vector<cv::Point2f>{rotated_point}, rot_mat);
-                    rotated_point=original_point;
 
                     points.push_back(original_point);
                 }
