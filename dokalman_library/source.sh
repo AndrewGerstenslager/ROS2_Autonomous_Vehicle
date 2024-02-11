@@ -17,8 +17,19 @@ print_blue() {
 
 source /opt/ros/${ROS_DISTRO}/setup.bash
 
-print_blue "BUILDING PACKAGE"
-colcon build --parallel-workers $(nproc)
+# If you add --clean as an argument, the package will be cleaned and built
+# Cleaning deletes the build and install directories and the CMake cache
+# This is useful when you want to make sure that the package is built from scratch
+# Sometimes there are issues with the CMake cache that can be fixed by cleaning
+# Example usage: . source.sh --clean
+if [ "$1" == "--clean" ]; then
+    print_blue "PACKAGE CLEANED AND BUILT"
+    colcon build --cmake-clean-cache --parallel-workers $(nproc)
+else
+    print_blue "BUILDING PACKAGE"
+    colcon build --parallel-workers $(nproc)
+fi
+
 print_blue "SOURCING PACKAGE"
 source install/setup.bash
 
