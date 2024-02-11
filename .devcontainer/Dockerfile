@@ -53,6 +53,7 @@ RUN git config --global core.autocrlf true \
         ros-${ROS_DISTRO}-tf-transformations \
         ros-${ROS_DISTRO}-joint-state-publisher \
         ros-${ROS_DISTRO}-slam-toolbox \
+        ros-${ROS_DISTRO}-nav2-bringup \
     # python3-pip is the package installer for Python
     && sudo apt install -y python3-pip
 
