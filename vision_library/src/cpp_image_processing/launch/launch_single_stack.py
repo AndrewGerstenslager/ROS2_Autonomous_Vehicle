@@ -4,15 +4,26 @@ import math
 
 def generate_launch_description():    
     nodes=[]
-    nodes+=process_image('right_camera/image_raw','right',180.0+63.0,-10.36,-2.1) 
-    nodes+=process_image('left_camera/image_raw','left',180.0-68.0,-2.2,-4.4)
+    # right and left camera in this case are from looking
+    # from the front to the back perspective
+    
+    # Angle of the camera from the front camera
+    # Front cam is at 0 degree, and counter-clockwise is positive
+    right_camera_angle=63.0 
+    left_camera_angle=-68.0
+    
+    nodes+=process_image('right_camera/image_raw','right',180.0+right_camera_angle,-10.36,-2.1) 
+    nodes+=process_image('left_camera/image_raw','left',180.0+left_camera_angle,-2.2,-4.4)
     nodes+=process_image('front_camera/image_raw','front',180.0,-5.7,-0.8)
     
     return LaunchDescription(
         nodes
     )
     
-#positive yaw means counter-clockwise
+# positive yaw means counter-clockwise
+# return a list of 3 nodes (skewed, black&white filtered, and cloudpoints)
+# trans_x and trans_y can be calibrated in rviz by 
+# manually changing the numbers until it looks right
 def process_image(camera,name,yaw,trans_x,trans_y):
     skew_topic=name+'_img_skewed'
     threshold_topic=name+'_img_processed'
@@ -38,7 +49,7 @@ def process_image(camera,name,yaw,trans_x,trans_y):
             name='image_threshold',
             parameters=[{'subscribed_topic':skew_topic},
                         {'published_topic':threshold_topic},
-                        {"threshold_value":180}] #[0,255] The higher the number the more exact color it has to be
+                        {"threshold_value":180}] #[0,255] The higher the number the stricter the white color filter
         )
     pcd=Node(
             package='cpp_image_processing',
