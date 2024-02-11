@@ -17,7 +17,7 @@ public:
         this->get_parameter("camera_topic", camera_topic_);
         this->get_parameter("save_file_path", save_file_path_);
 
-        image_transport::ImageTransport it(this);
+        image_transport::ImageTransport it(shared_from_this());
         image_sub_ = it.subscribe(camera_topic_, 1, 
                                   std::bind(&CameraImageProcessor::imageCallback, this, std::placeholders::_1));
     }
