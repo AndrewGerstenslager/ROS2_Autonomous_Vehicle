@@ -1,7 +1,7 @@
-# Base image
 FROM osrf/ros:foxy-desktop
 
 # Add vscode user with same UID and GID as your host system
+# (copied from https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user#_creating-a-nonroot-user)
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
@@ -11,7 +11,6 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && apt-get install -y sudo \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
-
 # Switch from root to user
 USER $USERNAME
 
@@ -21,54 +20,58 @@ RUN sudo usermod --append --groups video $USERNAME
 # Update all packages
 RUN sudo apt update && sudo apt upgrade -y
 
-# Install Git, a version control system
+# Install Git
 RUN sudo apt install -y git
 
-# Update rosdep, a tool for installing system dependencies for ROS packages
+# Rosdep update
 RUN rosdep update
 
 # Source the ROS setup file
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 
-# Andrew's additions
-RUN git config --global core.autocrlf true \
-    # dos2unix is used to convert text files from Windows format to Unix format
-    && sudo apt-get install -y dos2unix \
-    # usbutils provides lsusb utility for listing USB devices
-    && sudo apt-get install -y usbutils \
-    # linux-tools-virtual provides perf, a performance analyzing tool in Linux
-    && sudo apt-get install -y linux-tools-virtual \
-    # hwdata provides hardware identification and configuration data
-    && sudo apt-get install -y hwdata \
-    # net-tools provides the ifconfig utility for network interface configuration
-    && sudo apt-get install -y net-tools \
-    # iputils-ping provides the ping command
-    && sudo apt-get install -y iputils-ping \
-    # x11-apps provides a set of small applications which come with the X Window System
-    && sudo apt-get install -y x11-apps \
-    # ROS packages for Gazebo simulator, Xacro, TF transformations, Joint State Publisher, and SLAM toolbox
-    && sudo apt install -y \
-        ros-${ROS_DISTRO}-gazebo-ros-pkgs \
-        ros-${ROS_DISTRO}-xacro \
-        ros-${ROS_DISTRO}-tf-transformations \
-        ros-${ROS_DISTRO}-joint-state-publisher \
-        ros-${ROS_DISTRO}-slam-toolbox \
-        ros-${ROS_DISTRO}-nav2-bringup \
-    # python3-pip is the package installer for Python
-    && sudo apt install -y python3-pip
-
 # Update all packages
 RUN sudo apt update && sudo apt upgrade -y
+# Set Git to automatically convert line endings to LF on checkout, and to CRLF on commit
+RUN git config --global core.autocrlf true
 
-# Pip install all necessary packages
-# numpy is a package for scientific computing with Python
-# pandas is a data analysis and manipulation library
-# opencv-python is a library for computer vision tasks
-# transforms3d is a library for 3D transformations
-# geopy is a client for several popular geocoding web services
-RUN pip install \
-    numpy \
-    pandas \
-    opencv-python \
-    transforms3d \
-    geopy
+# Install dos2unix, a tool to convert text files with DOS or MAC line breaks to Unix line breaks
+RUN sudo apt-get install -y dos2unix
+
+# Install usbutils, a set of utility programs for managing and inspecting USB devices
+RUN sudo apt install -y usbutils
+
+# Install linux-tools-virtual and hwdata, tools and data for working with hardware
+RUN sudo apt install -y linux-tools-virtual hwdata
+
+# Install net-tools, providing the ifconfig, netstat, route, arp, and other classic network admin tools
+RUN sudo apt install -y net-tools
+
+# Install iputils-ping, a tool for network diagnostics
+RUN sudo apt install -y iputils-ping
+
+# Install x11-apps, a set of client applications for X11 (the X Window System)
+RUN sudo apt install -y x11-apps
+
+# Install ROS packages for Gazebo, a 3D dynamic simulator with the ability to accurately and efficiently simulate populations of robots in complex indoor and outdoor environments
+RUN sudo apt install -y ros-${ROS_DISTRO}-gazebo-ros-pkgs
+
+# Install xacro (XML Macro Language), a ROS package for generating XML files for ROS
+RUN sudo apt install -y ros-${ROS_DISTRO}-xacro
+
+# Install tf-transformations, a ROS package for handling 3D transform datatypes
+RUN sudo apt install -y ros-${ROS_DISTRO}-tf-transformations
+
+# Install joint-state-publisher, a ROS package for publishing `sensor_msgs/JointState` messages for a robot
+RUN sudo apt install -y ros-${ROS_DISTRO}-joint-state-publisher
+
+# Install slam-toolbox, a ROS package for 2D simultaneous localization and mapping
+RUN sudo apt install -y ros-${ROS_DISTRO}-slam-toolbox
+
+# Install nav2-bringup, a ROS package for bringing up all the navigation2 servers, plugins and configurations
+RUN sudo apt install -y ros-${ROS_DISTRO}-nav2-bringup
+
+# Install python3-pip, a package installer for Python
+RUN sudo apt install -y python3-pip
+
+# Install Python packages: numpy (for numerical operations), pandas (for data manipulation), opencv-python (for image and video processing), transforms3d (for 3D transformations), geopy (for geolocation)
+RUN pip install numpy pandas opencv-python transforms3d geopy
