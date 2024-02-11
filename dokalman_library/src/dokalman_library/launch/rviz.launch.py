@@ -8,7 +8,7 @@ def generate_launch_description():
     package_name='dokalman_library'
     package_path=get_package_share_directory(package_name)
 
-    rviz_config_file = PathJoinSubstitution([package_path, 'config', 'view_robot.rviz'])
+    rviz_config_file = PathJoinSubstitution([package_path, 'config', 'view_robot_slam.rviz'])
 
     # Declare the use_sim_time argument
     use_sim_time_arg = DeclareLaunchArgument(
