@@ -32,6 +32,9 @@ ament_target_dependencies(static_feed rclcpp std_msgs sensor_msgs cv_bridge imag
 add_executable(live_feed src/live_image_publisher.cpp)
 ament_target_dependencies(live_feed rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
 
+add_executable(camera_calibrate src/calibrate_camera_feed.cpp)
+ament_target_dependencies(camera_calibrate rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
+
 add_executable(image_threshold src/image_thresholding.cpp)
 ament_target_dependencies(image_threshold rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
 
@@ -45,6 +48,7 @@ ament_target_dependencies(image_to_pointcloud rclcpp std_msgs sensor_msgs cv_bri
 install(TARGETS
   static_feed
   live_feed
+  camera_calibrate
   image_threshold
   image_skew
   image_to_pointcloud
