@@ -29,6 +29,13 @@
       <name>line_det_course</name>
     </include>
 
+    <!-- Checkerboard-->
+    <include>
+      <pose>0 1 0 0 0 0</pose>
+      <uri>model://checkerboard</uri>
+      <name>checkerboard</name>
+    </include>
+
 
     <model name='unit_box'>
       <pose>-2.9767 -0.351508 0.5 0 -0 0</pose>
