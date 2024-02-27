@@ -22,12 +22,10 @@ public:
         // Retrieve the topic names from the ROS2 parameter server
         this->declare_parameter<std::string>("subscribed_topic", "input_image");
         this->declare_parameter<std::string>("published_topic", "output_image");
-        this->declare_parameter<std::string>("local_ipm_file_path", "calibration_data/test_cal.txt");
         this->declare_parameter<std::string>("global_ipm_file_path", "/dokalman/vision_library/src/cpp_image_processing/calibration_data/test_cal.txt");
 
         std::string subscribed_topic = this->get_parameter("subscribed_topic").as_string();
         std::string published_topic = this->get_parameter("published_topic").as_string();
-        local_file_path = this->get_parameter("local_ipm_file_path").as_string();
         global_file_path = this->get_parameter("global_ipm_file_path").as_string();
 
         //loadIPMMatrix();
@@ -124,7 +122,6 @@ private:
                 //Warp image
                 ipm_matrix = cv::getPerspectiveTransform(points, ipm_points);
                 cv::warpPerspective(im,processed_image, ipm_matrix,  im.size());
-                saveIPMMatrix(local_file_path,ipm_matrix);
                 saveIPMMatrix(global_file_path,ipm_matrix);
             }
              //if checkerboard not parallel, output img is not warped

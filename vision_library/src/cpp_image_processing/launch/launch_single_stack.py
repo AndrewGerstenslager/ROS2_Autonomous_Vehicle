@@ -28,6 +28,7 @@ def process_image(camera,name,yaw,trans_x,trans_y):
     skew_topic=name+'_img_skewed'
     threshold_topic=name+'_img_processed'
     pcd_topic=name+'_pcd'
+    ipm_path='/calibration_data/'+name+'_test_cal.txt'
     #Node(
     #    package='cpp_image_processing', 
     #    executable='live_feed', 
@@ -41,7 +42,7 @@ def process_image(camera,name,yaw,trans_x,trans_y):
             name='image_skew',
             parameters=[{'subscribed_topic':camera}, 
                         {'published_topic':skew_topic},
-                        {"ipm_file_path":"/calibration_data/test_cal.txt"}]
+                        {"ipm_file_path":ipm_path}]
         )
     threshold=Node(
             package='cpp_image_processing',
@@ -55,7 +56,7 @@ def process_image(camera,name,yaw,trans_x,trans_y):
             package='cpp_image_processing',
             executable='image_to_pointcloud',
             parameters=[
-                {'scale': 0.91*(1.0 / 255.0)},
+                {'scale': 1.0/255.0},
                 {'yaw' : yaw},
                 {'trans_x': trans_x},
                 {'trans_y':trans_y},
