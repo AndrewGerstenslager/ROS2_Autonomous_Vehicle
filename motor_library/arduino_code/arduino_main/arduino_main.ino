@@ -1,3 +1,9 @@
+//TODO: 4. Find the RC receiver pins that allows us to toggle the speed high/low in rc mode
+//TODO: 1. replace all set<COLOR>() methods with setColor() method with enum
+//TODO: 2. Test that the arduino actually listens to serial2 port
+//TODO: 3. report encoder data back to the Serial2 port for odom messages
+
+
 #include <FastLED.h>
 #define rc_pin_left_right 4
 #define rc_pin_up_down 5
@@ -17,44 +23,21 @@ int led_counter = 0;
 bool led_on = true;
 bool self_drive_flag = false;
 
-// ____________________LED CODE__________________________
-void setred () {
-  for (int i = 0; i <= NUM_LEDS; i++) {
-    leds[i] = CRGB ( 255, 0, 0);
-  }
-  FastLED.show();
-}
-void setblue () {
-  for (int i = 0; i <= NUM_LEDS; i++) {
-    leds[i] = CRGB ( 0, 0, 255);
-  }
-  FastLED.show();
-}
-void setyellow (){
-  for (int i = 0; i <= NUM_LEDS; i++) {
-    leds[i] = CRGB ( 255, 255, 0);
-}
-FastLED.show();
-}
-void setorange () {
-  for (int i = 0; i <= NUM_LEDS; i++) {
-    leds[i] = CRGB (255, 80, 0);
-  
-  }
-  FastLED.show();
-}
-void setgreen (){
-  for (int i = 0; i <= NUM_LEDS; i++) {
-    leds[i] = CRGB ( 0, 255, 0);
-}
-FastLED.show();
-}
 
-void setblack () {
+enum LED_COLOR {
+  RED= CRGB (255, 0, 0),
+  BLUE= CRGB ( 0, 0, 255),
+  YELLOW= CRGB ( 255, 255, 0),
+  ORANGE= CRGB (255, 80, 0),
+  GREEN= CRGB ( 0, 255, 0)
+  BLACK= CRGB ( 0, 0, 0)
+};
+
+void setColor(enum LED_COLOR color){
   for (int i = 0; i <= NUM_LEDS; i++) {
-    leds[i] = CRGB ( 0, 0, 0);
+    leds[i] = color;
 }
-FastLED.show();
+  FastLED.show();
 }
 
 //________________SERIAL COMMUNICATION______________________
@@ -67,14 +50,14 @@ String write_read(String data, bool send_back = 0){
   Serial1.println(data);
   
   //UNCOMMENT LINE BELOW TO SEE THE SENT MESSAGE
-  //Serial.println(s);
+  //Serial2.println(s);
 
   //get response
   String response = Serial1.readString();
   
   //Send response back to sender
   if(send_back){
-    Serial.println(response);
+    Serial2.println(response);
   }
   
   return response;
@@ -90,7 +73,7 @@ void self_drive_control(){
    * command then send the NUC back an appropriate response
    * 
    */
-  String com_usb = Serial.readString();
+  String com_usb = Serial2.readString();
   if(self_drive_flag){//if in autonomous mode
     //led control code for flashing
     led_counter++;
@@ -141,10 +124,10 @@ void self_drive_control(){
       else if(com_usb.charAt(0) == 's'){
         Serial1.println("d,s0");
         Serial1.println("t,s0");
-        Serial.println("STOPPED");
+        Serial2.println("STOPPED");
       }
       else{
-        //Serial.println("COMMAND NOT RECOGNIZED");
+        //Serial2.println("COMMAND NOT RECOGNIZED");
       }
     }
     
@@ -189,8 +172,8 @@ void rc_control(){
     else{
       drive_calculated = up_down_stick * 5;
     }
-  Serial.println(left_right_stick);
-  Serial.println(up_down_stick);
+  Serial2.println(left_right_stick);
+  Serial2.println(up_down_stick);
   turn_setup.concat(turn_calculated);
   drive_setup.concat(drive_calculated);
   Serial1.println(turn_setup);
@@ -210,7 +193,7 @@ void wait_for_rc(){
     trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
     while (trainer_toggle < 100){
       trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
-      Serial.println(trainer_toggle);
+      Serial2.println(trainer_toggle);
     }
 }
 
@@ -234,17 +217,17 @@ void initialize_kangaroo(){
   while(d.equals("")){
     d = write_read("d,start\nd,getp");
     delay(1000);
-    Serial.println("Waiting for Turn");
+    Serial2.println("Waiting for Turn");
   }
-  Serial.println("Drive Initialized");
+  Serial2.println("Drive Initialized");
 
   //Initialize Turn Channel
   while(t.equals("")){
-    Serial.println("Waiting for Drive");
+    Serial2.println("Waiting for Drive");
     t = write_read("t,start\nt,getp");
     delay(1000);
   }
-  Serial.println("Turn Initialized");
+  Serial2.println("Turn Initialized");
 
   //Send These values to "wake up" motors
   //NOTE: idk why we need this but it won't take drive and turn
@@ -270,12 +253,12 @@ void setup() {
   trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
   
   //Begin Serial ports
-  Serial.begin(9600);
+  Serial2.begin(9600);
   Serial1.begin(9600);
 
   //Set timeout - important because readString() will wait until 10ms of data is read in
   //default value is 1000ms (1 sec) and is really slow otherwise
-  Serial.setTimeout(10);
+  Serial2.setTimeout(10);
   Serial1.setTimeout(10);
 
   initialize_kangaroo();
@@ -285,7 +268,7 @@ void setup() {
 
   
   //KEEP THIS LINE IN
-  Serial.println("Ready");
+  Serial2.println("Ready");
 }
 
 
@@ -297,11 +280,11 @@ void loop() {
   if(trainer_toggle - prev_trainer_toggle > 1600){
     setblue();
     rc_control();
-    //Serial.println("RC MODE");
+    //Serial2.println("RC MODE");
   }
   else if(trainer_toggle - prev_trainer_toggle > 1400){
     self_drive_control();
-    //Serial.println("SELF DRIVING MODE");
+    //Serial2.println("SELF DRIVING MODE");
   }
   else if(trainer_toggle == 0){
     wait_for_rc();
@@ -310,7 +293,7 @@ void loop() {
     setred();
     Serial1.println("d,s0");
     Serial1.println("t,s0");
-    //Serial.println("STOPPED");
+    //Serial2.println("STOPPED");
   }  
   
   
