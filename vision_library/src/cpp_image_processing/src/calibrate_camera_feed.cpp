@@ -40,15 +40,15 @@ private:
     bool check_horizontal_checkerboard(cv::Point2f& top_left,cv::Point2f& top_right,cv::Point2f& bottom_right,cv::Point2f& bottom_left,int threshold=10){
         if ((top_left.y<bottom_right.y) and (top_left.x<bottom_right.x) and (abs(top_left.y-top_right.y)<=threshold))
             return true;
-        if ((top_left.y<bottom_right.y) and (top_left.x>bottom_right.x) and (abs(top_left.y-bottom_left.y)<threshold)){
+        if ((top_left.y<bottom_right.y) and (top_left.x>bottom_right.x) and (abs(top_left.y-bottom_left.y)<=threshold)){
             checkerboard_shape=cv::Size(checkerboard_shape.height,checkerboard_shape.width);
             width=checkerboard_shape.width;
             height=checkerboard_shape.height;
             cv::Point2f temp=top_left;
-            top_left = top_right;
-            top_right = bottom_right;
-            bottom_right = bottom_left;
-            bottom_right = temp;
+            top_left =  bottom_left;
+            top_right =  temp;
+            bottom_right = top_right;
+            bottom_left =  bottom_right;
             return true;
         }
         return false;
