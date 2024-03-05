@@ -12,9 +12,9 @@ def generate_launch_description():
     right_camera_angle=63.0 
     left_camera_angle=-68.0
     
-    nodes+=process_image('right_camera/image_raw','right',180.0+right_camera_angle,0.0,0.0) 
-    nodes+=process_image('left_camera/image_raw','left',180.0+left_camera_angle,0.0,0.0)
-    nodes+=process_image('front_camera/image_raw','front',180.0,0.0,0.0)
+    nodes+=process_image('right_camera/image_raw','right',180.0+right_camera_angle,-7.5,-1.1) 
+    nodes+=process_image('left_camera/image_raw','left',180.0+left_camera_angle,-0.0,-1.2)
+    nodes+=process_image('front_camera/image_raw','front',180.0,-3.8,1.35)
     
     return LaunchDescription(
         nodes
@@ -56,7 +56,7 @@ def process_image(camera,name,yaw,trans_x,trans_y):
             package='cpp_image_processing',
             executable='image_to_pointcloud',
             parameters=[
-                {'scale': 1.0/255.0},
+                {'scale': 3.0/255.0},
                 {'yaw' : yaw},
                 {'trans_x': trans_x},
                 {'trans_y':trans_y},
