@@ -5,10 +5,12 @@
 
 
 #include <FastLED.h>
-#define rc_pin_left_right 4
-#define rc_pin_up_down 5
-#define rc_pin_trainer_toggle 7
-#define rc_pin_power 8
+#define rc_pin_left_right 3         //BLUE WIRE Horizontal right stick
+#define rc_pin_up_down 4            //GREEN WIRE Vertical right stick
+#define rc_pin_trainer_toggle 6     //ORANGE WIRE 
+#define rc_pin_right_left 5         //YELLOW WIRE Horizontal left stick. Not used
+#define rc_pin_throttle 2           //PURPLE WIRE Vertical left stick. Not used
+#define rc_pin_power 13             //Plugs into RC pwr
 #define LED_PIN     12
 #define NUM_LEDS   16
 
