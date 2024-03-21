@@ -10,7 +10,7 @@
 #define rc_pin_trainer_toggle 7
 #define rc_pin_power 8
 #define LED_PIN     12
-#define NUM_LEDS    16
+#define NUM_LEDS   16
 
 CRGB leds[NUM_LEDS];
 
@@ -24,16 +24,14 @@ bool led_on = true;
 bool self_drive_flag = false;
 
 
-enum LED_COLOR {
-  RED= CRGB (255, 0, 0),
-  BLUE= CRGB ( 0, 0, 255),
-  YELLOW= CRGB ( 255, 255, 0),
-  ORANGE= CRGB (255, 80, 0),
-  GREEN= CRGB ( 0, 255, 0)
-  BLACK= CRGB ( 0, 0, 0)
-};
+const CRGB RED= CRGB (255, 0, 0);
+const CRGB BLUE= CRGB ( 0, 0, 255);
+const CRGB YELLOW= CRGB ( 255, 255, 0);
+const CRGB ORANGE= CRGB (255, 80, 0);
+const CRGB GREEN= CRGB ( 0, 255, 0);
+const CRGB BLACK= CRGB ( 0, 0, 0);
 
-void setColor(enum LED_COLOR color){
+void setColor(CRGB color){
   for (int i = 0; i <= NUM_LEDS; i++) {
     leds[i] = color;
 }
@@ -87,14 +85,14 @@ void self_drive_control(){
       led_counter = 0;
     }
     if(led_on){
-      setgreen();
+      setColor(RED);
     }
     else{
-      setblack();
+      setColor(BLACK);
     }
   }
   else{
-    setgreen();
+    setColor(GREEN);
   }
   
   if (com_usb != ""){
@@ -186,7 +184,7 @@ void rc_control(){
 void wait_for_rc(){
   Serial1.println("t,s0");
   Serial1.println("d,s0");
-    setyellow();
+    setColor(YELLOW);
     digitalWrite(rc_pin_power, LOW);
     delay(500);
     digitalWrite(rc_pin_power, HIGH);
@@ -208,7 +206,7 @@ void initialize_kangaroo(){
    * We keep sending start for drive and turn channels
    * until we get an appropriate response
    */
-  setorange();
+  setColor(ORANGE);
   //Setup Variables
   String d = "";
   String t = "";
@@ -278,7 +276,7 @@ void loop() {
   
   
   if(trainer_toggle - prev_trainer_toggle > 1600){
-    setblue();
+    setColor(BLUE);
     rc_control();
     //Serial2.println("RC MODE");
   }
@@ -290,7 +288,7 @@ void loop() {
     wait_for_rc();
   }
   else{
-    setred();
+    setColor(RED);
     Serial1.println("d,s0");
     Serial1.println("t,s0");
     //Serial2.println("STOPPED");
