@@ -14,7 +14,7 @@ def get_camera_serial(device):
     return match.group(1) if match else None
 
 def find_device_by_serial(target_serial):
-    for i in range(10):  # adjust range as necessary
+    for i in range(10):  # adjust range as necesysary
         device = f"/dev/video{i}"
         if os.path.exists(device):
             serial = get_camera_serial(device)
@@ -23,7 +23,7 @@ def find_device_by_serial(target_serial):
                 return cap
     return None
 
-cap = find_device_by_serial(device1)
+cap = find_device_by_serial(device3)
 
 if not cap.isOpened():
     print("Error: Could not open video device.")

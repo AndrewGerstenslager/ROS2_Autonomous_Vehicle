@@ -3,7 +3,7 @@
         "DOKALMAN",
         "dokalman",
     ],
-    "cmake.sourceDirectory": "/home/ubuntu/repo/dokalman/dokalman_library/src/dokalman",
+    "cmake.sourceDirectory": "/home/ubuntu/Documents/GitLabClonedRepositories/dokalman-1/vision_library/src/cpp_image_processing",
     "python.formatting.provider": "black",
     "ros.distro": "foxy",
     "C_Cpp.errorSquiggles": "disabled"
