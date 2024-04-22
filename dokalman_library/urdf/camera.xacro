@@ -7,7 +7,7 @@
     <joint name="left_camera_joint" type="fixed">
         <parent link="ChassisLink"/>
         <child link="left_camera_link"/>
-        <origin xyz="0.23 0.21 0.24" rpy="0 0.3 0.4"/>
+        <origin xyz="0.33 0.00 0.24" rpy="0 ${50*pi/180} ${-pi/2 + pi/2}"/>
     </joint>
 
     <link name="left_camera_link">
@@ -38,11 +38,11 @@
             <visualize>true</visualize>
             <update_rate>10</update_rate>
             <camera>
-                <horizontal_fov>1.089</horizontal_fov>
+                <horizontal_fov>2.094</horizontal_fov>
                 <image>
                     <format>R8G8B8</format>
-                    <width>640</width>
-                    <height>480</height>
+                    <width>1920</width>
+                    <height>1080</height>
                 </image>
                 <clip>
                     <near>0.05</near>
@@ -61,7 +61,7 @@
     <joint name="right_camera_joint" type="fixed">
         <parent link="ChassisLink"/>
         <child link="right_camera_link"/>
-        <origin xyz="-0.23 0.21 0.24" rpy="0 0.3 2.7"/>
+        <origin xyz="-0.33 0.00 0.24" rpy="0 ${50*pi/180} ${pi/2 + pi/2}"/>
     </joint>
 
     <link name="right_camera_link">
@@ -92,11 +92,11 @@
             <visualize>true</visualize>
             <update_rate>10</update_rate>
             <camera>
-                <horizontal_fov>1.089</horizontal_fov>
+                <horizontal_fov>2.094</horizontal_fov>
                 <image>
                     <format>R8G8B8</format>
-                    <width>640</width>
-                    <height>480</height>
+                    <width>1920</width>
+                    <height>1080</height>
                 </image>
                 <clip>
                     <near>0.05</near>
@@ -110,11 +110,11 @@
         </sensor>
     </gazebo>
 
-<!--Front Camera Stuff-->
+    <!--Front Camera Stuff-->
     <joint name="front_camera_joint" type="fixed">
         <parent link="ChassisLink"/>
         <child link="front_camera_link"/>
-        <origin xyz="0 0.48 0.24" rpy="0 0.3 1.6"/>
+        <origin xyz="0 0.48 0.24" rpy="0 ${50*pi/180} ${0 + pi/2}"/>
     </joint>
 
     <link name="front_camera_link">
@@ -145,11 +145,11 @@
             <visualize>true</visualize>
             <update_rate>10</update_rate>
             <camera>
-                <horizontal_fov>1.089</horizontal_fov>
+                <horizontal_fov>2.094</horizontal_fov>
                 <image>
                     <format>R8G8B8</format>
-                    <width>640</width>
-                    <height>480</height>
+                    <width>1920</width>
+                    <height>1080</height>
                 </image>
                 <clip>
                     <near>0.05</near>
