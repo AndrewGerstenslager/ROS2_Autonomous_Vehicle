@@ -5,6 +5,7 @@ from geometry_msgs.msg import Twist
 from geographiclib.geodesic import Geodesic
 import math
 from rclpy.node import Node
+from simple_pid import PID
 
 
 class TurnToWaypointNode(Node):
@@ -20,6 +21,10 @@ class TurnToWaypointNode(Node):
         self.current_heading = 0.0
         self.current_waypoint = None
 
+        # Initialize the PID controller
+        self.pid = PID(1.0, 0.1, 0.05, setpoint=0)
+
+        
     def waypoint_callback(self, msg: NavSatFix):
         self.current_waypoint = msg
 
@@ -33,27 +38,24 @@ class TurnToWaypointNode(Node):
         # Adjust the bearing to match the robot's heading system
         bearing = -bearing
 
-        # If the current heading does not match the bearing, publish a turn command
-        if abs(bearing - self.current_heading) > 10.0:  # Allow for a small error
-            twist = Twist()
-            turn_speed = math.radians(bearing - self.current_heading)  # Calculate turn speed
+        # Set the setpoint of the PID controller to the desired bearing
+        self.pid.setpoint = bearing
 
-            # Limit the top turning speed to 0.5
-            if turn_speed > 0.5:
-                turn_speed = 0.5
-            elif turn_speed < -0.5:
-                turn_speed = -0.5
+        # Use the output of the PID controller to control the turning speed
+        turn_speed = self.pid(self.current_heading)
 
-            twist.angular.z = turn_speed
-            self.cmd_vel_publisher.publish(twist)
+        # Limit the top turning speed to 0.5
+        if turn_speed > 0.5:
+            turn_speed = 0.5
+        elif turn_speed < -0.5:
+            turn_speed = -0.5
 
-            # Print the direction of the turn
-            if turn_speed > 0:
-                print("Turning right")
-            elif turn_speed < 0:
-                print("Turning left")
-        else:
-            # If the robot is facing the goal, publish a forward speed
+        twist = Twist()
+        twist.angular.z = turn_speed
+        self.cmd_vel_publisher.publish(twist)
+
+        # If the robot is facing the goal, publish a forward speed
+        if abs(bearing - self.current_heading) <= 10.0:  # Allow for a small error
             twist = Twist()
             twist.linear.x = 0.5  # Adjust forward speed as needed
             self.cmd_vel_publisher.publish(twist)
