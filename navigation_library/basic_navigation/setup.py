@@ -1,4 +1,5 @@
 from setuptools import setup
+from glob import glob
 
 package_name = 'basic_navigation'
 
@@ -10,6 +11,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/waypoints', glob('waypoints/*')),
+
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -20,6 +23,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'heading_from_odom_node = basic_navigation.odom:main',
+            'waypoint_turning_node = basic_navigation.turn_to_waypoint:main',
+            'waypoint_follower = basic_navigation.basic_waypoint_follower:main',
+            'goal_setter = basic_navigation.waypoint_goal_setter:main',
         ],
     },
 )
