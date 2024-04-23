@@ -47,7 +47,7 @@ class WaypointPublisher(Node):
         distance = Geodesic.WGS84.Inverse(msg.latitude, msg.longitude, waypoint[0], waypoint[1])['s12']
 
         # If the robot is within 0.2 meters of the waypoint, move to the next waypoint
-        if distance < 0.2:
+        if distance < 2:
             self.current_waypoint_index += 1
             if self.current_waypoint_index < len(self.waypoints):
                 self.get_logger().info(f'Moving to waypoint {self.current_waypoint_index}')
