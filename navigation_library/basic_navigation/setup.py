@@ -12,7 +12,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/waypoints', glob('waypoints/*')),
-
+        ('share/' + package_name + '/launch', glob('launch/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -27,6 +27,7 @@ setup(
             'waypoint_turning_node = basic_navigation.turn_to_waypoint:main',
             'waypoint_follower = basic_navigation.basic_waypoint_follower:main',
             'goal_setter = basic_navigation.waypoint_goal_setter:main',
+            'random_goal_setter = basic_navigation.random_waypoint_goal_setter:main',
         ],
     },
 )

@@ -30,35 +30,31 @@ class TurnToWaypointNode(Node):
 
     def gps_callback(self, msg: NavSatFix):
         if self.current_waypoint is None:
+            self.get_logger().info(f'Waypoint is None')
             return
 
-        # Calculate the bearing to the target
-        bearing = Geodesic.WGS84.Inverse(msg.latitude, msg.longitude, self.current_waypoint.latitude, self.current_waypoint.longitude)['azi1']
+        # Calculate the bearing and distance to the target
+        result = Geodesic.WGS84.Inverse(msg.latitude, msg.longitude, self.current_waypoint.latitude, self.current_waypoint.longitude)
+        bearing = result['azi1']
+        distance = result['s12']
+
+        # Print the distance
+        self.get_logger().info(f'Distance to waypoint: {distance} meters')
 
         # Adjust the bearing to match the robot's heading system
         bearing = -bearing
 
-        # Set the setpoint of the PID controller to the desired bearing
-        self.pid.setpoint = bearing
+        # Set the turning speed proportional to the distance
+        divisor = 10
+        turn_speed = math.sqrt(distance / divisor) if bearing > self.current_heading else -math.sqrt(distance / divisor)
 
-        # Use the output of the PID controller to control the turning speed
-        turn_speed = self.pid(self.current_heading)
-
-        # Limit the top turning speed to 0.5
-        if turn_speed > 0.5:
-            turn_speed = 0.5
-        elif turn_speed < -0.5:
-            turn_speed = -0.5
+        # Set the forward speed to a constant value
+        forward_speed = 0.5
 
         twist = Twist()
         twist.angular.z = turn_speed
+        twist.linear.x = forward_speed
         self.cmd_vel_publisher.publish(twist)
-
-        # If the robot is facing the goal, publish a forward speed
-        if abs(bearing - self.current_heading) <= 10.0:  # Allow for a small error
-            twist = Twist()
-            twist.linear.x = 0.5  # Adjust forward speed as needed
-            self.cmd_vel_publisher.publish(twist)
 
     def heading_callback(self, msg: Float64):
         self.current_heading = msg.data
