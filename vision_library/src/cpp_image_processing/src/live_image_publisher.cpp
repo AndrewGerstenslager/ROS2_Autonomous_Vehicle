@@ -19,8 +19,8 @@ public:
         
         std::string topic;
         this->get_parameter("published_topic", topic);
-
-        cap_ = std::make_unique<cv::VideoCapture>(device_path, cv::CAP_V4L);
+        std::string pipeline = "v4l2src device="+device_path+" ! video/x-raw,format=YUY2,width=640,height=480,framerate=30/1 ! videoconvert ! video/x-raw, format=BGR ! appsink drop=1 ";
+        cap_ = std::make_unique<cv::VideoCapture>(pipeline, cv::CAP_GSTREAMER);
 
         if (!cap_->isOpened()) {
             RCLCPP_ERROR(this->get_logger(), "Cannot open video device %s", device_path.c_str());
