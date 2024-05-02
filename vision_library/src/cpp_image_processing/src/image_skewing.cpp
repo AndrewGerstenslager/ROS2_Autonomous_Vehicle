@@ -66,6 +66,9 @@ private:
             for (int col = 0; col < 3; col++) {
                 ipm_matrix.at<double>(row,col) = stold(floats[col]);
             }
+            if (row>=2){
+                break;
+            }
             row++;
             
         }

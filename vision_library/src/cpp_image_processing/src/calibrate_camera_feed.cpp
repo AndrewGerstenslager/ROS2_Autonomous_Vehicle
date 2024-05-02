@@ -54,7 +54,7 @@ private:
         return false;
     }
 
-    void saveIPMMatrix(const std::string& file_path, const cv::Mat& matrix) {
+    void saveIPMMatrix(const std::string& file_path, const cv::Mat& matrix, float sc) {
         // Save the IPM matrix to file
         ofstream outfile;
         outfile.open (file_path);
@@ -65,9 +65,11 @@ private:
             }
             if (row<matrix.rows-1) outfile << endl;
         }
-
+        outfile<<endl<<sc;
         outfile.close();
     }
+
+
     void image_callback(const sensor_msgs::msg::Image::SharedPtr msg) {
 
         // Convert ROS Image message to OpenCV Mat
@@ -107,7 +109,7 @@ private:
 
             if (checkerboard_horizontal){
                 cv::Point2f points[4]={top_left,bottom_left,bottom_right,top_right};
-                int x_size=20;
+                int x_size=50;
                 int y_size= x_size*height/width;
                 int y_mid= im.rows-y_size;
                 int x_mid = (im.cols/2.0);
@@ -122,7 +124,8 @@ private:
                 //Warp image
                 ipm_matrix = cv::getPerspectiveTransform(points, ipm_points);
                 cv::warpPerspective(im,processed_image, ipm_matrix,  im.size());
-                saveIPMMatrix(global_file_path,ipm_matrix);
+                double sc=width*0.15/(x_size*2.0);//get_scale(processed_image);
+                saveIPMMatrix(global_file_path,ipm_matrix,sc);
             }
              //if checkerboard not parallel, output img is not warped
         }

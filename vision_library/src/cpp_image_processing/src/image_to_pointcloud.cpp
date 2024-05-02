@@ -7,6 +7,11 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <vector>
 #include <sensor_msgs/point_cloud2_iterator.hpp>
+#include <string>
+#include <ament_index_cpp/get_package_share_directory.hpp>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
 
 class ImageToPCDPublisher : public rclcpp::Node
 {
@@ -16,18 +21,22 @@ public:
     ImageToPCDPublisher()
     : Node("image_to_pcd_publisher")
     {
-        this->declare_parameter<float>("scale", 1.0f / 255.0f);
+        //this->declare_parameter<float>("scale", 1.0f / 255.0f);
         this->declare_parameter<std::string>("input_topic", "/img_processed");
         this->declare_parameter<std::string>("output_topic", "pcd");
         this->declare_parameter<float>("yaw", 0.0f);
         this->declare_parameter<float>("trans_x",0.0f);
         this->declare_parameter<float>("trans_y",0.0f);
+        this->declare_parameter<std::string>("ipm_file_path", "calibration_data/test.txt");
 
         std::string input_topic = this->get_parameter("input_topic").as_string();
         std::string output_topic = this->get_parameter("output_topic").as_string();
         yaw=this->get_parameter("yaw").as_double();
         trans_x=this->get_parameter("trans_x").as_double();
         trans_y=this->get_parameter("trans_y").as_double();
+        file_path = this->get_parameter("ipm_file_path").as_string();
+        scale = 3.0/255.0;
+        loadScale();
 
         subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
             input_topic,
@@ -38,6 +47,37 @@ public:
     }
 
 private:
+void loadScale()
+    {
+        std::string package_share_directory = ament_index_cpp::get_package_share_directory("cpp_image_processing");
+
+        std::string calibration_data_file = package_share_directory + file_path;
+
+        // Check if file exists
+        if (!std::filesystem::exists(calibration_data_file)) {
+            RCLCPP_ERROR(this->get_logger(), "File does not exist: %s", calibration_data_file.c_str());
+            return;
+        }
+        else{
+            RCLCPP_INFO(this->get_logger(),"File Exists");
+        }
+
+        RCLCPP_INFO(this->get_logger(), "Attempting to read from file: %s", calibration_data_file.c_str());
+
+        std::ifstream file(calibration_data_file);
+
+        std::string line;
+        int row = 0;
+        while (getline(file, line))
+        {
+            if (row==3){            
+                scale=std::stod(line);
+            }
+            row++;
+        }
+
+    }
+
     cv:: Mat rotate_image(cv::Mat source, float angle)
     {
         cv::Point2f center((source.cols - 1) / 2.0, (source.rows - 1) / 2.0);
@@ -76,13 +116,11 @@ private:
             {
                 if (cv_image.at<uchar>(y, x) == 255)
                 {
-                    float scale = static_cast<float>(this->get_parameter("scale").as_double());
 
                     original_point=cv::Point2f(x * scale, y * scale);
                     //Translate
                     original_point.x += trans_x;
                     original_point.y += trans_y;
-
                     points.push_back(original_point);
                 }
             }
@@ -120,6 +158,8 @@ private:
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
     cv::Mat rotation_matrix_;
+    std::string file_path;
+    double scale;
 };
 
 int main(int argc, char **argv)
