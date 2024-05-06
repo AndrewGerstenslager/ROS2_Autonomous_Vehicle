@@ -31,9 +31,17 @@
 
     <!-- Checkerboard-->
     <include>
-      <pose>0 3 0.01 0 0 0</pose>
+      <pose>1 2 0.01 0 0 0</pose>
       <uri>model://checkerboard</uri>
-      <name>checkerboard</name>
+      <name>checkerboard0</name>
+    </include>
+
+
+    <!-- pothole-->
+    <include>
+      <pose>2 1 0.01 0 0 0</pose>
+      <uri>model://pothole_2ft_diameter</uri>
+      <name>pothole</name>
     </include>
 
 
