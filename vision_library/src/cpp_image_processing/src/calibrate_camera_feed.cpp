@@ -54,7 +54,7 @@ private:
         return false;
     }
 
-    void saveIPMMatrix(const std::string& file_path, const cv::Mat& matrix, float sc) {
+    void saveIPMMatrix(const std::string& file_path, const cv::Mat& matrix, float sc, cv::Point2f bottom_left_corner, cv::Size output_size) {
         // Save the IPM matrix to file
         ofstream outfile;
         outfile.open (file_path);
@@ -66,6 +66,8 @@ private:
             if (row<matrix.rows-1) outfile << endl;
         }
         outfile<<endl<<sc;
+        outfile<<endl<<bottom_left_corner.x<<" "<<bottom_left_corner.y;
+        outfile<<endl<<output_size.width<<" "<<output_size.height;
         outfile.close();
     }
 
@@ -109,10 +111,10 @@ private:
 
             if (checkerboard_horizontal){
                 cv::Point2f points[4]={top_left,bottom_left,bottom_right,top_right};
-                int x_size=50;
+                int x_size=25;
                 int y_size= x_size*height/width;
-                int y_mid= im.rows-y_size;
-                int x_mid = (im.cols/2.0);
+                int y_mid= 30*y_size;
+                int x_mid = 30*x_size;
                 //Getting 4 corners of checkerboard warped to top-down view
                 cv::Point2f ipm_top_left = cv::Point2f(x_mid - x_size, y_mid - y_size);
                 cv::Point2f ipm_bottom_left = cv::Point2f(x_mid - x_size, y_mid + y_size);
@@ -123,9 +125,21 @@ private:
 
                 //Warp image
                 ipm_matrix = cv::getPerspectiveTransform(points, ipm_points);
-                cv::warpPerspective(im,processed_image, ipm_matrix,  im.size());
-                double sc=width*0.15/(x_size*2.0);//get_scale(processed_image);
-                saveIPMMatrix(global_file_path,ipm_matrix,sc);
+
+                std::vector<Point2f> old_corners,new_corners;
+                old_corners.push_back(Point2f(0,0));
+                old_corners.push_back(Point2f(0,im.rows));
+                old_corners.push_back(Point2f(im.cols,im.rows));
+                old_corners.push_back(Point2f(im.cols,0));
+                cv::perspectiveTransform(old_corners, new_corners, ipm_matrix);
+                
+                double prev_sc=0.5*abs(top_left.x-top_right.x)/(2*x_size);
+                cv::warpPerspective(im,processed_image, ipm_matrix,  cv::Size(new_corners[3].x,new_corners[1].y));//cv::Size(im.cols/prev_sc , im.rows/prev_sc));
+                double sc=width*0.108/(x_size*2.0);//get_scale(processed_image);
+                cv::Point2f bottom_center_corner;
+                bottom_center_corner.x=(new_corners[1].x+new_corners[2].x)/2.0;
+                bottom_center_corner.y=(new_corners[1].y+new_corners[2].y)/2.0;
+                saveIPMMatrix(global_file_path,ipm_matrix,sc,bottom_center_corner,cv::Size(new_corners[3].x,new_corners[1].y));
             }
              //if checkerboard not parallel, output img is not warped
         }

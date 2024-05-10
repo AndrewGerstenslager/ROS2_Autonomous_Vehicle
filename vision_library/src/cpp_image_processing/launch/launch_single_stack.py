@@ -12,9 +12,10 @@ def generate_launch_description():
     left_camera_angle=90.0 
     right_camera_angle=-90.0
     
-    nodes+=process_image('right_camera/image_raw','right',180.0+right_camera_angle,-1.5,-3.2) 
-    nodes+=process_image('left_camera/image_raw','left',180.0+left_camera_angle,-10.2,-3.4)
-    nodes+=process_image('front_camera/image_raw','front',180.0,-5.0,1.5)
+    #process_image(input,name_topic,angle_yaw,x_translation,y_translation)
+    nodes+=process_image('right_camera/image_raw','right',180.0+right_camera_angle,0.35,0.0) 
+    nodes+=process_image('left_camera/image_raw','left',180.0+left_camera_angle,-0.35,0.0)
+    nodes+=process_image('front_camera/image_raw','front',180.0,0.0,0.48)
     
     return LaunchDescription(
         nodes

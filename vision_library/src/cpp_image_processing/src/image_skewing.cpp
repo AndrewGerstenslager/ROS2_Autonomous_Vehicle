@@ -56,21 +56,30 @@ private:
         int row = 0;
         while (getline(file, line))
         {
-            stringstream ssin(line);
-            int i = 0;
-            while (ssin.good() && i < 3){
-                ssin >> floats[i];
-                ++i;
+            if (row<=2){
+                stringstream ssin(line);
+                int i = 0;
+                while (ssin.good() && i < 3){
+                    ssin >> floats[i];
+                    ++i;
+                }
+                //RCLCPP_INFO(this->get_logger(), line);
+                for (int col = 0; col < 3; col++) {
+                    ipm_matrix.at<double>(row,col) = stold(floats[col]);
+                }
             }
-            //RCLCPP_INFO(this->get_logger(), line);
-            for (int col = 0; col < 3; col++) {
-                ipm_matrix.at<double>(row,col) = stold(floats[col]);
+            if (row==5){
+                std::stringstream ss(line);
+                std::string w,h;
+                ss>>w;
+                ss>>h;
+                output_size.width=std::stoi(w);
+                output_size.height=std::stoi(h);
             }
-            if (row>=2){
+            if (row>=6){
                 break;
             }
             row++;
-            
         }
         //printIPMMatrix();
     }
@@ -105,7 +114,7 @@ private:
 
         // Apply the IPM transformation
         cv::Mat output_image;
-        cv::warpPerspective(input_image, output_image, ipm_matrix, input_image.size());
+        cv::warpPerspective(input_image, output_image, ipm_matrix, output_size);
 
         // Convert the processed OpenCV image to a ROS Image message
         sensor_msgs::msg::Image::SharedPtr processed_msg = cv_bridge::CvImage(msg->header, "bgr8", output_image).toImageMsg();
@@ -118,6 +127,7 @@ private:
     rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr publisher_;
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
     cv::Mat ipm_matrix;
+    cv::Size output_size;
     };
 
 int main(int argc, char *argv[]) {

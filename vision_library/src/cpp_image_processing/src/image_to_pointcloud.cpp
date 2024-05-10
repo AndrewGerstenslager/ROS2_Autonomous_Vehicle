@@ -12,11 +12,10 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
-
+#include <cmath>
 class ImageToPCDPublisher : public rclcpp::Node
 {
-cv::Mat rot_mat;
-float trans_x,trans_y,yaw;
+
 public:
     ImageToPCDPublisher()
     : Node("image_to_pcd_publisher")
@@ -31,13 +30,12 @@ public:
 
         std::string input_topic = this->get_parameter("input_topic").as_string();
         std::string output_topic = this->get_parameter("output_topic").as_string();
-        yaw=this->get_parameter("yaw").as_double();
-        trans_x=this->get_parameter("trans_x").as_double();
-        trans_y=this->get_parameter("trans_y").as_double();
+        name_debug=input_topic;
         file_path = this->get_parameter("ipm_file_path").as_string();
         scale = 3.0/255.0;
-        loadScale();
-
+        loadCal();
+        //trans_x-=old_bottom_center.x*scale*(cos((yaw-180.0)*M_PI/180.0));
+        //trans_y-=(old_bottom_center.x)*scale*(sin((yaw-180.0)*M_PI/180.0));
         subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
             input_topic,
             10,
@@ -47,7 +45,7 @@ public:
     }
 
 private:
-void loadScale()
+void loadCal()
     {
         std::string package_share_directory = ament_index_cpp::get_package_share_directory("cpp_image_processing");
 
@@ -73,6 +71,14 @@ void loadScale()
             if (row==3){            
                 scale=std::stod(line);
             }
+            else if(row==4){
+                std::stringstream ss(line);
+                std::string x,y;
+                ss>>x;
+                ss>>y;
+                old_bottom_center.x=std::stod(x);
+                old_bottom_center.y=std::stod(y);
+            }
             row++;
         }
 
@@ -81,9 +87,35 @@ void loadScale()
     cv:: Mat rotate_image(cv::Mat source, float angle)
     {
         cv::Point2f center((source.cols - 1) / 2.0, (source.rows - 1) / 2.0);
-        cv::Mat rotation_matix = getRotationMatrix2D(center, angle, 1.0);
+        cv::Mat rotation_matrix = getRotationMatrix2D(center, angle, 1.0);
         cv::Mat rotated_image;
-        cv::warpAffine(source, rotated_image, rotation_matix, source.size());
+        cv::warpAffine(source, rotated_image, rotation_matrix, source.size());
+
+        std::vector<cv::Point2f> old_point, new_point;
+        old_point.push_back(old_bottom_center); 
+        old_point.push_back(cv::Point2f(source.cols-1,source.rows-1));   
+        cv::transform(old_point, new_point, rotation_matrix);
+        cv::Point2f flipped_point=new_point[0];
+        flipped_point.x+=2*(rotated_image.cols/2.0-flipped_point.x);
+        trans_x-=(flipped_point.x)*scale;
+        trans_y-=(flipped_point.y)*scale;   
+
+        // cv::Point2f new_point;
+        // new_point.x=(old_bottom_center.x-center.x)*cos(yaw*M_PI/180.0)-(old_bottom_center.y-center.y)*sin(yaw*M_PI/180.0);
+        // new_point.y=(old_bottom_center.x-center.x)*sin(yaw*M_PI/180.0)+(old_bottom_center.y-center.y)*cos(yaw*M_PI/180.0);
+        // new_point.x+=2*(rotated_image.cols/2.0-new_point.x);
+        // trans_x-=(new_point.x)*scale;
+        // trans_y-=(new_point.y)*scale;  
+
+        std::ofstream outfile;
+        std::string filename="/dokalman/vision_library/src/cpp_image_processing/calibration_data/"+name_debug+"debug.txt";
+        outfile.open (filename);
+        outfile<<old_bottom_center<<std::endl;
+        outfile<<new_point[0]<<std::endl;
+        outfile<<flipped_point<<std::endl;
+        outfile<<(trans_x)<<" "<<(trans_y);
+        outfile.close();
+
         return rotated_image;
     }
     void image_callback(const sensor_msgs::msg::Image::SharedPtr msg)
@@ -100,7 +132,9 @@ void loadScale()
         }
 
         cv::Mat &cv_image = cv_ptr->image;
-
+        yaw=this->get_parameter("yaw").as_double();
+        trans_x=this->get_parameter("trans_x").as_double();
+        trans_y=this->get_parameter("trans_y").as_double();
         //Rotating cloudpoints is hard man so rotate image instead.
         //Potential issue: rotated image may be cropped
         cv_image=rotate_image(cv_image,yaw);
@@ -160,6 +194,10 @@ void loadScale()
     cv::Mat rotation_matrix_;
     std::string file_path;
     double scale;
+    cv::Point2f old_bottom_center,new_bottom_center;
+    cv::Mat rot_mat;
+    float trans_x,trans_y,yaw;
+    std::string name_debug;
 };
 
 int main(int argc, char **argv)
