@@ -2,47 +2,56 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/msg/image.hpp>
 #include <opencv2/opencv.hpp>
-#include <fstream>
-#include <sstream>
 
 class CameraPublisherNode : public rclcpp::Node
 {
 public:
     CameraPublisherNode(const rclcpp::NodeOptions & options = rclcpp::NodeOptions())
-    : Node("image_publisher_node", options)
+    : Node("camera_publisher_node", options)
     {
-        this->declare_parameter<std::string>("device_path", "");  // default to empty string
-        this->declare_parameter<std::string>("published_topic", "image");  // default to "image"
-
-        std::string device_path;
-        this->get_parameter("device_path", device_path);
-        
-        std::string topic;
-        this->get_parameter("published_topic", topic);
+        std::string device_path = this->declare_parameter("device_path", "/dev/video0"); // Default path added
+        std::string topic = this->declare_parameter("published_topic", "image");
 
         cap_ = std::make_unique<cv::VideoCapture>(device_path, cv::CAP_V4L);
 
+        // Check if video capture has been opened correctly
         if (!cap_->isOpened()) {
-            RCLCPP_ERROR(this->get_logger(), "Cannot open video device %s", device_path.c_str());
-            rclcpp::shutdown();
-        } else {
-            RCLCPP_INFO(this->get_logger(), "Successfully opened video device %s", device_path.c_str());
+            RCLCPP_ERROR(this->get_logger(), "Cannot open video device: %s", device_path.c_str());
+            return;
         }
 
-        pub_ = this->create_publisher<sensor_msgs::msg::Image>(topic, 10);
+        // Set video format to MJPG
+        cap_->set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
 
-        timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&CameraPublisherNode::timer_callback, this));
+        // Set resolution to 1920x1080
+        cap_->set(cv::CAP_PROP_FRAME_WIDTH, 1280);
+        cap_->set(cv::CAP_PROP_FRAME_HEIGHT, 720);
+
+        // Verify settings
+        if (cap_->get(cv::CAP_PROP_FRAME_WIDTH) != 1920 || cap_->get(cv::CAP_PROP_FRAME_HEIGHT) != 1080) {
+            RCLCPP_WARN(this->get_logger(), "Unable to set resolution to 1920x1080 on %s, using default resolution", device_path.c_str());
+        } else {
+            RCLCPP_INFO(this->get_logger(), "Resolution set to 1920x1080 on %s", device_path.c_str());
+        }
+
+        RCLCPP_INFO(this->get_logger(), "Successfully opened video device: %s", device_path.c_str());
+
+        pub_ = this->create_publisher<sensor_msgs::msg::Image>(topic, 10);
+        timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(250), 
+            std::bind(&CameraPublisherNode::timer_callback, this));
     }
 
 private:
     void timer_callback()
     {
         cv::Mat frame;
-        *cap_ >> frame;
-
-        if (!frame.empty()) {
+        if (cap_->read(frame) && !frame.empty()) {
+            RCLCPP_INFO(this->get_logger(), "Captured frame dimensions: %dx%d", frame.cols, frame.rows);
             auto msg = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", frame).toImageMsg();
-            pub_->publish(*msg);
+            pub_->publish(*msg.get());
+        } else {
+            RCLCPP_ERROR(this->get_logger(), "Failed to capture frame or frame is empty");
         }
     }
 
@@ -51,10 +60,11 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
 };
 
-int main(int argc, char *argv[]) {
-  rclcpp::init(argc, argv);
-  auto node = std::make_shared<CameraPublisherNode>();
-  rclcpp::spin(node);
-  rclcpp::shutdown();
-  return 0;
+int main(int argc, char *argv[])
+{
+    rclcpp::init(argc, argv);
+    auto node = std::make_shared<CameraPublisherNode>();
+    rclcpp::spin(node);
+    rclcpp::shutdown();
+    return 0;
 }

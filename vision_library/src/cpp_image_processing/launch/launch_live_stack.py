@@ -1,33 +1,71 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
+import os
+import re
+import subprocess
+import sys
+
+#CAMERA INFO (ID_SERIAL_SHORT)
+#ACCESSED THROUGH RUNNING:
+#  udevadm info --query=all --name=/dev/video0
+#  videoX can be any open video connection in /dev
+FRONT_CAM = {"ID_SERIAL_SHORT": "A231111000200156"}
+LEFT_CAM = {"ID_SERIAL_SHORT": "A231111000209494"}
+RIGHT_CAM = {"ID_SERIAL_SHORT": "A230401000215170"}
+
+def find_cameras():
+    """Finds all video device indices in /dev, queries their serial numbers, and identifies the camera."""
+    dev_list = os.listdir('/dev')
+    video_devices = [dev for dev in dev_list if re.match(r'video\d+', dev)]
+
+    camera_ports = {}
+    for video_device in video_devices:
+        device_path = os.path.join('/dev', video_device)
+        serial_number = get_serial_number(device_path)
+        camera_name = identify_camera_by_serial(serial_number)
+        if camera_name:
+            camera_ports[camera_name] = device_path
+    
+    return camera_ports
+
+def get_serial_number(device_path):
+    """Queries the serial number of a device using udevadm."""
+    try:
+        output = subprocess.check_output(['udevadm', 'info', '--query=property', '--name=' + device_path])
+        for line in output.decode('utf-8').split('\n'):
+            if 'ID_SERIAL_SHORT' in line:
+                return line.split('=')[1].strip()
+    except subprocess.CalledProcessError as e:
+        print(f"Error querying device {device_path}: {e}")
+    return None
+
+def identify_camera_by_serial(serial_number):
+    """Identifies the camera based on its serial number."""
+    if serial_number == FRONT_CAM['ID_SERIAL_SHORT']:
+        return 'Front Camera'
+    elif serial_number == LEFT_CAM['ID_SERIAL_SHORT']:
+        return 'Left Camera'
+    elif serial_number == RIGHT_CAM['ID_SERIAL_SHORT']:
+        return 'Right Camera'
+    return None
 
 def generate_launch_description():
-    return LaunchDescription([
-        Node(
-            package='cpp_image_processing', 
-            executable='live_feed', 
-            name='right_live_feed',
-            parameters=[{'serial':'5EBF6F8F'}, {'published_topic':'right_img_raw'}]
-        ),
-        Node(
-            package='cpp_image_processing', 
-            executable='live_feed', 
-            name='left_live_feed',
-            parameters=[{'serial':'B1CF6F8F'}, {'published_topic':'left_img_raw'}]
-        ),
+    camera_ports = find_cameras()
+    required_cameras = ['Front Camera', 'Left Camera', 'Right Camera']
+    launch_nodes = []
 
-        Node(
-            package='cpp_image_processing',
-            executable='image_threshold',
-            name='right_line_threshold',
-            parameters=[{'subscribed_topic': 'right_img_raw'},
-                        {'published_topic': 'right_img_processed'}]
-        ),
-        Node(
-            package='cpp_image_processing',
-            executable='image_threshold',
-            name='left_line_threshold',
-            parameters=[{'subscribed_topic': 'left_img_raw'},
-                        {'published_topic': 'left_img_processed'}]
-        ),
-    ])
+    for camera in required_cameras:
+        if camera in camera_ports:
+            node = Node(
+                package='cpp_image_processing',
+                executable='live_feed',
+                name=f'{camera.lower().replace(" ", "_")}_live_feed',
+                parameters=[{'device_path': camera_ports[camera]}, {'published_topic': f'{camera.lower().replace(" ", "_")}_img_raw'}]
+            )
+            launch_nodes.append(node)
+        else:
+            print(f"Error: {camera} not found. Ensure all cameras are connected.")
+            sys.exit(1)
+
+    return LaunchDescription(launch_nodes)
+
