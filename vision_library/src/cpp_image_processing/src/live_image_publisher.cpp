@@ -49,7 +49,7 @@ private:
         if (cap_->read(frame) && !frame.empty()) {
             RCLCPP_INFO(this->get_logger(), "Captured frame dimensions: %dx%d", frame.cols, frame.rows);
             auto msg = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", frame).toImageMsg();
-            pub_->publish(*msg);
+            pub_->publish(*msg.get());
         } else {
             RCLCPP_ERROR(this->get_logger(), "Failed to capture frame or frame is empty");
         }
