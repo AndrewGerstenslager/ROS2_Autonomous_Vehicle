@@ -42,6 +42,9 @@ RUN sudo apt install -y iputils-ping
 RUN sudo apt install -y x11-apps
 RUN sudo apt install -y ros-${ROS_DISTRO}-gazebo-ros-pkgs
 RUN sudo apt install -y ros-${ROS_DISTRO}-xacro
+RUN sudo apt install -y ros-${ROS_DISTRO}-navigation2
+RUN sudo apt install -y ros-${ROS_DISTRO}-nav2-bringup
+RUN sudo apt install -y ros-${ROS_DISTRO}-slam-toolbox
 RUN sudo apt-get install -y python3-pip
 
 # Update all packages
