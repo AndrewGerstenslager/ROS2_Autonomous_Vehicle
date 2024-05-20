@@ -33,6 +33,7 @@ setup(
             'data_collection = basic_navigation.data_collection:main',
             'generate_bearing = basic_navigation.bearing:main',
             'visualize_bearing = basic_navigation.visualize_bearing:main',
+            'publish_initial_pose = basic_navigation.publish_initial_pose:main',
         ],
     },
 )
