@@ -38,7 +38,7 @@ fi
 print_blue "LAUNCH FILES:"
 LAUNCH_DIR="src/${PACKAGE_NAME}/launch" # Default path for C++ packages
 if [ "${PACKAGE_TYPE}" = "python" ]; then
-    LAUNCH_DIR="src/launch" # Adjust path for Python packages if necessary
+    LAUNCH_DIR="launch" # Adjust path for Python packages if necessary
 fi
 
 if [ -z "$(ls -A ${LAUNCH_DIR} 2>/dev/null)" ]; then
