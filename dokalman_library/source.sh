@@ -18,7 +18,7 @@ print_blue() {
 source /opt/ros/${ROS_DISTRO}/setup.bash
 
 print_blue "BUILDING PACKAGE"
-colcon build
+colcon build --symlink-install
 print_blue "SOURCING PACKAGE"
 source install/setup.bash
 
@@ -46,3 +46,9 @@ if [ -z "$(ls -A ${LAUNCH_DIR} 2>/dev/null)" ]; then
 else
     ls ${LAUNCH_DIR}
 fi
+
+
+# This is an environment variable that fixes STLs not rendering in rviz2
+# Please don't change this I spent 5 hours figuring out this command
+# source https://github.com/ros2/rviz/issues/804
+export LIBGL_ALWAYS_SOFTWARE=1
