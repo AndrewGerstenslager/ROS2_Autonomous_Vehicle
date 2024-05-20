@@ -134,7 +134,7 @@ private:
                 
                 double prev_sc=0.5*abs(top_left.x-top_right.x)/(2*x_size);
                 cv::warpPerspective(im,processed_image, ipm_matrix,  cv::Size(new_corners[3].x,new_corners[1].y));//cv::Size(im.cols/prev_sc , im.rows/prev_sc));
-                double sc=width*0.108/(x_size*2.0);//get_scale(processed_image);
+                double sc=1.1*width*0.108/(x_size*2.0);//get_scale(processed_image);
                 cv::Point2f bottom_center_corner;
                 bottom_center_corner.x=(new_corners[1].x+new_corners[2].x)/2.0;
                 bottom_center_corner.y=(new_corners[1].y+new_corners[2].y)/2.0;
