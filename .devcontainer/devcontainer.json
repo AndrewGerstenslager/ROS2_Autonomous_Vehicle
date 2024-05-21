@@ -1,5 +1,5 @@
 {
-  "name": "foxy desktop",
+  "name": "galactic desktop",
   "dockerFile": "Dockerfile",
   "runArgs": [
     "--privileged",
