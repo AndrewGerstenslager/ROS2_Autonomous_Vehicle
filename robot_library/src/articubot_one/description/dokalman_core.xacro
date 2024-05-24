@@ -2,12 +2,17 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="inertial_macros.xacro"/>
-  <xacro:property name="wheel_radius" value="0.19"/>
-  <xacro:property name="wheel_thickness" value="0.026"/>
-  <xacro:property name="wheel_offset_x" value="0.2427"/>
-  <xacro:property name="wheel_offset_y" value="0.10265"/>
-  <xacro:property name="wheel_offset_z" value="0.10795"/>
 
+  <!-- PROPERTIES -->
+  <xacro:property name="wheel_radius" value="0.15"/>
+  <xacro:property name="wheel_thickness" value="0.032"/>
+  <xacro:property name="wheel_mass" value="0.15"/>
+  <xacro:property name="wheel_offset_x" value="0.30175"/>
+  <xacro:property name="wheel_offset_y" value="0.2427"/>
+  <xacro:property name="wheel_offset_z" value="0.26683"/>
+
+
+  <!-- MATERIALS -->
   <material name="white">
       <color rgba="1 1 1 1" />
   </material>
@@ -27,6 +32,21 @@
   <material name="red">
       <color rgba="1 0 0 1"/>
   </material>
+
+
+  <!-- BASE LINK -->
+  <link name="base_link"/>
+
+
+  <!-- BASE_FOOTPRINT LINK -->
+  <joint name="base_footprint_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="base_footprint"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_footprint"/>
+
 
   <!-- CHASSIS -->
   <joint name="dokalman_chassis_joint" type="fixed">
@@ -78,118 +98,62 @@
   </link>
 
   <!-- BACK LEFT WHEEL -->
-  <link name="BackLeftWheelLink">
-    <inertial>
-      <origin
-        xyz="-0.020955 0 0"
-        rpy="0 0 0" />
-      <mass
-        value="2.9916" />
-      <inertia
-        ixx="0.035119"
-        ixy="0"
-        ixz="0"
-        iyy="0.017802"
-        iyz="0"
-        izz="0.018192" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="file://$(find articubot_one)/meshes/BackLeftWheelLink.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.79216 0.81961 0.93333 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="file://$(find articubot_one)/meshes/BackLeftWheelLink.STL" />
-      </geometry>
-    </collision>
-  </link>
   <joint name="left_wheel_joint" type="continuous">
-    <origin
-      xyz="-0.30175 0.2427 -0.26683"
-      rpy="0 0 -1.5708" />
-    <parent
-      link="base_link" />
-    <child
-      link="BackLeftWheelLink" />
-    <axis
-      xyz="-1 0 0" />
-    <limit
-      lower="0"
-      upper="3.1415"
-      effort="1"
-      velocity="1" />
+      <parent link="base_link"/>
+      <child link="left_wheel"/>
+      <origin xyz="0 ${wheel_offset_y} 0" rpy="-${pi/2} 0 0" />
+      <axis xyz="0 0 1"/>
   </joint>
 
-  <!-- BACK RIGHT WHEEL -->
-  <link name="BackRightWheelLink">
-    <inertial>
-      <origin
-        xyz="0.020955 0 0"
-        rpy="0 0 0" />
-      <mass
-        value="2.9916" />
-      <inertia
-        ixx="0.035119"
-        ixy="0"
-        ixz="0"
-        iyy="0.017802"
-        iyz="0"
-        izz="0.018192" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="file://$(find articubot_one)/meshes/BackRightWheelLink.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.79216 0.81961 0.93333 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="file://$(find articubot_one)/meshes/BackRightWheelLink.STL" />
-      </geometry>
-    </collision>
+  <link name="left_wheel">
+      <visual>
+          <geometry>
+              <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+          </geometry>
+          <material name="blue"/>
+      </visual>
+      <collision>
+          <geometry>
+              <sphere radius="${wheel_radius}"/>
+          </geometry>
+      </collision>
+      <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+      </xacro:inertial_cylinder>
   </link>
+
+  <gazebo reference="left_wheel">
+      <material>Gazebo/Blue</material>
+  </gazebo>
+
+  <!-- BACK RIGHT WHEEL -->
   <joint name="right_wheel_joint" type="continuous">
-    <origin
-      xyz="-0.30175 -0.2427 -0.26683"
-      rpy="0 0 -1.5708" />
-    <parent
-      link="base_link" />
-    <child
-      link="BackRightWheelLink" />
-    <axis
-      xyz="-1 0 0" />
-    <limit
-      lower="0"
-      upper="3.1415"
-      effort="1"
-      velocity="1" />
-  </joint>
+        <parent link="base_link"/>
+        <child link="right_wheel"/>
+        <origin xyz="0 ${-wheel_offset_y} 0" rpy="${pi/2} 0 0" />
+        <axis xyz="0 0 -1"/>
+    </joint>
+
+    <link name="right_wheel">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <gazebo reference="right_wheel">
+        <material>Gazebo/Blue</material>
+    </gazebo>
 
   <!-- CASTER -->
   <link name="CasterLink">
