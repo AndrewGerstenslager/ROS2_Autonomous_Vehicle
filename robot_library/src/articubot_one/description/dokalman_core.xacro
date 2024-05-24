@@ -5,11 +5,11 @@
 
   <!-- PROPERTIES -->
   <xacro:property name="wheel_radius" value="0.15"/>
-  <xacro:property name="wheel_thickness" value="0.032"/>
+  <xacro:property name="wheel_thickness" value="0.035"/>
   <xacro:property name="wheel_mass" value="0.15"/>
-  <xacro:property name="wheel_offset_x" value="0.30175"/>
-  <xacro:property name="wheel_offset_y" value="0.2427"/>
-  <xacro:property name="wheel_offset_z" value="0.26683"/>
+  <xacro:property name="wheel_offset_x" value="-0.30175"/>
+  <xacro:property name="wheel_offset_y" value="0.26"/>
+  <xacro:property name="wheel_offset_z" value="-0.26683"/>
 
 
   <!-- MATERIALS -->
@@ -101,7 +101,7 @@
   <joint name="left_wheel_joint" type="continuous">
       <parent link="base_link"/>
       <child link="left_wheel"/>
-      <origin xyz="0 ${wheel_offset_y} 0" rpy="-${pi/2} 0 0" />
+      <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="-${pi/2} 0 0" />
       <axis xyz="0 0 1"/>
   </joint>
 
@@ -123,14 +123,14 @@
   </link>
 
   <gazebo reference="left_wheel">
-      <material>Gazebo/Blue</material>
+      <material>Gazebo/White</material>
   </gazebo>
 
   <!-- BACK RIGHT WHEEL -->
   <joint name="right_wheel_joint" type="continuous">
         <parent link="base_link"/>
         <child link="right_wheel"/>
-        <origin xyz="0 ${-wheel_offset_y} 0" rpy="${pi/2} 0 0" />
+        <origin xyz="${wheel_offset_x}   ${-wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
         <axis xyz="0 0 -1"/>
     </joint>
 
@@ -152,7 +152,7 @@
     </link>
 
     <gazebo reference="right_wheel">
-        <material>Gazebo/Blue</material>
+        <material>Gazebo/White</material>
     </gazebo>
 
   <!-- CASTER -->
