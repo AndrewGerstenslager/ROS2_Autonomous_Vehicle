@@ -1,0 +1,7 @@
+ros2 launch articubot_one launch_sim.launch.py world:=src/articubot_one/worlds/obstacles.world
+
+ros2 run rviz2 rviz2 -d src/articubot_one/config/main.rviz --ros-args --remap use_sim_time:=true
+
+ros2 launch articubot_one online_async_launch.py use_sim_time:=true
+
+ros2 launch articubot_one navigation_launch.py use_sim_time:=true
