@@ -1,5 +1,5 @@
 {
-  "name": "foxy desktop",
+  "name": "humble desktop",
   "dockerFile": "Dockerfile",
   "runArgs": [
     "--privileged",

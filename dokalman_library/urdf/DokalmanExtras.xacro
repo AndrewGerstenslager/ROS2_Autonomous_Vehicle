@@ -63,4 +63,14 @@
         <origin xyz="0 -0.35 0.215" rpy="0 0 0"/> <!-- RPY in radians, adjust position and orientation as needed -->
     </joint>
 
+    <!-- base_footprint Link and Joint -->
+    <link name="base_footprint" />
+
+    <joint name="base_to_base_footprint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/> <!-- RPY in radians, adjust position and orientation as needed -->
+    </joint>
+
+
 </robot>

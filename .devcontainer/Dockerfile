@@ -1,4 +1,4 @@
-FROM osrf/ros:foxy-desktop
+FROM osrf/ros:humble-desktop
 
 # Add vscode user with same UID and GID as your host system
 # (copied from https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user#_creating-a-nonroot-user)
@@ -28,24 +28,45 @@ RUN rosdep update
 
 # Source the ROS setup file
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
 
 # Update all packages
 RUN sudo apt update && sudo apt upgrade -y
 
 # Andrew added some stuff here
-RUN git config --global core.autocrlf true
-RUN sudo apt-get install -y dos2unix
-RUN sudo apt install -y usbutils
-RUN sudo apt install -y linux-tools-virtual hwdata
-RUN sudo apt install -y net-tools
-RUN sudo apt install -y iputils-ping
-RUN sudo apt install -y x11-apps
-RUN sudo apt install -y ros-${ROS_DISTRO}-gazebo-ros-pkgs
-RUN sudo apt install -y ros-${ROS_DISTRO}-xacro
-RUN sudo apt-get install -y python3-pip
-
-# Update all packages
-RUN sudo apt update && sudo apt upgrade -y
+RUN sudo apt-get update && sudo apt-get install -y \
+    dos2unix \
+    usbutils \
+    linux-tools-virtual \
+    hwdata \
+    net-tools \
+    iputils-ping \
+    x11-apps \
+    python3-pip \
+    vim \
+    joystick \
+    jstest-gtk \
+    evtest
 
 # Pip install all necessary packages
 RUN pip install numpy pandas opencv-python
+
+RUN sudo apt update && sudo apt install -y \
+    ros-${ROS_DISTRO}-gazebo-ros-pkgs \
+    ros-${ROS_DISTRO}-xacro \
+    ros-${ROS_DISTRO}-navigation2 \
+    ros-${ROS_DISTRO}-nav2-bringup \
+    ros-${ROS_DISTRO}-slam-toolbox \
+    ros-${ROS_DISTRO}-controller-manager \
+    ros-${ROS_DISTRO}-teleop-twist-keyboard \
+    ros-${ROS_DISTRO}-joy \
+    ros-${ROS_DISTRO}-twist-mux \
+    ros-${ROS_DISTRO}-diff-drive-controller \
+    ros-${ROS_DISTRO}-joint-state-broadcaster \
+    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    ros-${ROS_DISTRO}-ros2-control \
+    ros-${ROS_DISTRO}-ros2-controllers \
+    ros-${ROS_DISTRO}-gazebo-ros2-control \
+    ros-${ROS_DISTRO}-joint-state-publisher-gui
+    
+

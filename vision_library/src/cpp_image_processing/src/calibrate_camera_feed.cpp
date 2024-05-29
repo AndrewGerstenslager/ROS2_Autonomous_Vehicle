@@ -37,7 +37,7 @@ public:
 
 private:
 
-    bool check_horizontal_checkerboard(cv::Point2f& top_left,cv::Point2f& top_right,cv::Point2f& bottom_right,cv::Point2f& bottom_left,int threshold=10){
+    bool check_horizontal_checkerboard(cv::Point2f& top_left,cv::Point2f& top_right,cv::Point2f& bottom_right,cv::Point2f& bottom_left,int threshold=20){
         if ((top_left.y<bottom_right.y) and (top_left.x<bottom_right.x) and (abs(top_left.y-top_right.y)<=threshold))
             return true;
         if ((top_left.y<bottom_right.y) and (top_left.x>bottom_right.x) and (abs(top_left.y-bottom_left.y)<=threshold)){
@@ -70,7 +70,6 @@ private:
         outfile<<endl<<output_size.width<<" "<<output_size.height;
         outfile.close();
     }
-
 
     void image_callback(const sensor_msgs::msg::Image::SharedPtr msg) {
 
