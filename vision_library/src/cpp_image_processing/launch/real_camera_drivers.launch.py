@@ -42,16 +42,16 @@ def get_serial_number(device_path):
 def identify_camera_by_serial(serial_number):
     """Identifies the camera based on its serial number."""
     if serial_number == FRONT_CAM['ID_SERIAL_SHORT']:
-        return 'Front Camera'
+        return 'Front Cam'
     elif serial_number == LEFT_CAM['ID_SERIAL_SHORT']:
-        return 'Left Camera'
+        return 'Left Cam'
     elif serial_number == RIGHT_CAM['ID_SERIAL_SHORT']:
-        return 'Right Camera'
+        return 'Right Cam'
     return None
 
 def generate_launch_description():
     camera_ports = find_cameras()
-    required_cameras = ['Front Camera', 'Left Camera', 'Right Camera']
+    required_cameras = ['Front Cam', 'Left Cam', 'Right Cam']
     launch_nodes = []
 
     for camera in required_cameras:

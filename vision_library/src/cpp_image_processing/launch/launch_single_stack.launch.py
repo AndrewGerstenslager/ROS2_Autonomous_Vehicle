@@ -13,9 +13,9 @@ def generate_launch_description():
     right_camera_angle=-90.0
     
     #process_image(input,name_topic,angle_yaw,x_translation,y_translation)
-    nodes+=process_image('right_camera/image_raw','right',180.0+right_camera_angle,0.35,0.0) 
-    nodes+=process_image('left_camera/image_raw','left',180.0+left_camera_angle,-0.35,0.0)
-    nodes+=process_image('front_camera/image_raw','front',180.0,0.0,0.48)
+    nodes+=process_image('right_cam_img_raw','right',180.0+right_camera_angle,0.35,0.0) 
+    nodes+=process_image('left_cam_img_raw','left',180.0+left_camera_angle,-0.35,0.0)
+    nodes+=process_image('front_cam_img_raw','front',180.0,0.0,0.48)
     
     return LaunchDescription(
         nodes
@@ -51,7 +51,7 @@ def process_image(camera,name,yaw,trans_x,trans_y):
             name='image_threshold',
             parameters=[{'subscribed_topic':skew_topic},
                         {'published_topic':threshold_topic},
-                        {"threshold_value":180}] #[0,255] The higher the number the stricter the white color filter
+                        {"threshold_value":165}] #[0,255] The higher the number the stricter the white color filter
         )
     pcd=Node(
             package='cpp_image_processing',

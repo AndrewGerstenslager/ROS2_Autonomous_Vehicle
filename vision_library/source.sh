@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+cd ../usb_cam_library
+. source.sh
+cd ../vision_library
+
 # CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
 export PACKAGE_NAME='cpp_image_processing'
 # ADD LINE BELOW TO DEFINE THE PACKAGE TYPE

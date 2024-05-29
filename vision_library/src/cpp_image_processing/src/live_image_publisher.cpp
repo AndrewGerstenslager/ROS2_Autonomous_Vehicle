@@ -36,9 +36,9 @@ public:
 
         RCLCPP_INFO(this->get_logger(), "Successfully opened video device: %s", device_path.c_str());
 
-        pub_ = this->create_publisher<sensor_msgs::msg::Image>(topic, 10);
+        pub_ = this->create_publisher<sensor_msgs::msg::Image>(topic, 5);
         timer_ = this->create_wall_timer(
-            std::chrono::milliseconds(250), 
+            std::chrono::milliseconds(100), 
             std::bind(&CameraPublisherNode::timer_callback, this));
     }
 
@@ -48,8 +48,13 @@ private:
         cv::Mat frame;
         if (cap_->read(frame) && !frame.empty()) {
             RCLCPP_INFO(this->get_logger(), "Captured frame dimensions: %dx%d", frame.cols, frame.rows);
-            auto msg = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", frame).toImageMsg();
+            //reduce to 640x320
+            cv::Mat smaller_frame;
+            cv::resize(frame, smaller_frame, cv::Size(), 0.25, 0.25, cv::INTER_LINEAR);
+
+            auto msg = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", smaller_frame).toImageMsg();
             pub_->publish(*msg.get());
+
         } else {
             RCLCPP_ERROR(this->get_logger(), "Failed to capture frame or frame is empty");
         }
