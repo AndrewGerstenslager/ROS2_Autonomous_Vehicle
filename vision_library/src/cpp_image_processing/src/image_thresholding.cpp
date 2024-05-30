@@ -16,10 +16,12 @@ public:
     this->declare_parameter<std::string>("subscribed_topic", "input_image");
     this->declare_parameter<std::string>("published_topic", "output_image");
     this->declare_parameter<int>("threshold_value", 100);
+    this->declare_parameter<int>("min_area",100);
 
     std::string subscribed_topic = this->get_parameter("subscribed_topic").as_string();
     std::string published_topic = this->get_parameter("published_topic").as_string();
     thresh_val = this->get_parameter("threshold_value").as_int();
+    min_area=this->get_parameter("min_area").as_int();
     publisher_ = this->create_publisher<sensor_msgs::msg::Image>(published_topic, 10);
     subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
         subscribed_topic, 10, bind(&ImageProcessor::image_callback, this, placeholders::_1));
@@ -61,7 +63,7 @@ private:
     Mat mask = Mat::zeros(img_thr.size(), img_thr.type());
 
     // Filter blobs by size and draw them on the mask
-    int min_area = 250;
+    //int min_area = 250;
     for (const auto &contour : contours) {
       double area = contourArea(contour);
       if (area >= min_area) {
@@ -76,6 +78,7 @@ private:
     publisher_->publish(*processed_msg);
   }
   int thresh_val;
+  int min_area;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr publisher_;
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
 };

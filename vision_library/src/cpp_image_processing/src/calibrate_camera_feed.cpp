@@ -95,7 +95,7 @@ private:
         cv::Mat output_image=processed_image.clone();
 
         bool ret = cv::findChessboardCorners(im, checkerboard_shape, corners);
-        bool checkerboard_horizontal=false;
+        //bool checkerboard_horizontal=false;
 
         //if checkerboard found
         if (ret){
@@ -107,7 +107,7 @@ private:
             cv::Point2f bottom_right = cv::Point2f(corners[width*height-1]);
 
             //Checking if image is parallel to the camera
-            checkerboard_horizontal = check_horizontal_checkerboard(top_left,top_right,bottom_right,bottom_left);
+            check_horizontal_checkerboard(top_left,top_right,bottom_right,bottom_left);
 
             if (true){//checkerboard_horizontal){
                 //warp image but not correct crop

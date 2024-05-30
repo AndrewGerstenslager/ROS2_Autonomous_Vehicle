@@ -1,0 +1,2 @@
+#Reset rqt configs
+rm -rf ~/.config/ros.org/rqt*

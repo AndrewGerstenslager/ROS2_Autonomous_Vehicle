@@ -42,11 +42,11 @@ def get_serial_number(device_path):
 def identify_camera_by_serial(serial_number):
     """Identifies the camera based on its serial number."""
     if serial_number == FRONT_CAM['ID_SERIAL_SHORT']:
-        return 'Front Cam'
+        return 'Front Camera'
     elif serial_number == LEFT_CAM['ID_SERIAL_SHORT']:
-        return 'Left Cam'
+        return 'Left Camera'
     elif serial_number == RIGHT_CAM['ID_SERIAL_SHORT']:
-        return 'Right Cam'
+        return 'Right Camera'
     return None
 
 def generate_launch_description():
@@ -60,7 +60,7 @@ def generate_launch_description():
                 package='cpp_image_processing',
                 executable='live_feed',
                 name=f'{camera.lower().replace(" ", "_")}_live_feed',
-                parameters=[{'device_path': camera_ports[camera]}, {'published_topic': f'{camera.lower().replace(" ", "_")}_img_raw'}]
+                parameters=[{'device_path': camera_ports[camera]}, {'published_topic': f'/{camera.lower().replace(" ", "_")}/image_raw'}]
             )
             launch_nodes.append(node)
         else:

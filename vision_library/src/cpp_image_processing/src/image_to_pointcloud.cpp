@@ -89,7 +89,7 @@ void loadCal()
         cv::Point2f center((source.cols - 1) / 2.0, (source.rows - 1) / 2.0);
         cv::Mat rotation_matrix = getRotationMatrix2D(center, angle, 1.0);
         cv::Mat rotated_image;
-        cv::warpAffine(source, rotated_image, rotation_matrix, source.size());
+        cv::warpAffine(source, rotated_image, rotation_matrix, cv::Size(source.rows*2.0,source.cols*2.0));
 
         std::vector<cv::Point2f> old_point, new_point;
         old_point.push_back(old_bottom_center); 
@@ -106,15 +106,6 @@ void loadCal()
         // new_point.x+=2*(rotated_image.cols/2.0-new_point.x);
         // trans_x-=(new_point.x)*scale;
         // trans_y-=(new_point.y)*scale;  
-
-        std::ofstream outfile;
-        std::string filename="/dokalman/vision_library/src/cpp_image_processing/calibration_data/"+name_debug+"debug.txt";
-        outfile.open (filename);
-        outfile<<old_bottom_center<<std::endl;
-        outfile<<new_point[0]<<std::endl;
-        outfile<<flipped_point<<std::endl;
-        outfile<<(trans_x)<<" "<<(trans_y);
-        outfile.close();
 
         return rotated_image;
     }

@@ -27,7 +27,7 @@ find_package(tf2_msgs REQUIRED)
 # build packages
 add_executable(static_feed src/static_image_publisher.cpp)
 ament_target_dependencies(static_feed rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
-
+target_link_libraries(static_feed stdc++fs)  # Link filesystem library
 
 add_executable(live_feed src/live_image_publisher.cpp)
 ament_target_dependencies(live_feed rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV)
