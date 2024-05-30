@@ -1,7 +1,9 @@
-//TODO: 4. Find the RC receiver pins that give us the left-right & up-down for the left stick
+//TODO: 1. Find the RC receiver pins that give us the left-right & up-down for the left stick
 // Rename variables to be more clear on the stick being used now that there are two
-//TODO: 5. make the left stick modify the speed by its up-down value. bottom 
-//TODO: 3. report encoder data back to the Serial2 port for odom messages
+//TODO 2: add a calibration mode, where the controller is used to set max and min values for the controller
+
+//TODO: 3. make the left stick modify the speed by its up-down value. bottom 
+//TODO: 4. report encoder data back to the Serial2 port for odom messages
 
 
 #include <FastLED.h>
@@ -283,7 +285,7 @@ void loop() {
   trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
   
   
-  if(trainer_toggle - prev_trainer_toggle > 1600){
+  if(trainer_toggle - psrev_trainer_toggle > 1600){
     setColor(BLUE);
     rc_control();
     //Serial2.println("RC MODE");

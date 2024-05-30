@@ -63,8 +63,9 @@ void loop() {
  //calculate_speeds();
  //Serial.println("d,s" +  String(turn_calculated));
  //Serial.println("t,s" + String(drive_calcualted));
- rate = pulseIn(rc_pin_throttle, HIGH);
+ rate = pulseIn(rc_pin_up_down, HIGH);
  Serial.println(rate);
+ Serial.println("FUCK");
  //delay(500);
 }
 
