@@ -51,9 +51,8 @@ def identify_camera_by_serial(serial_number):
 
 def generate_launch_description():
     camera_ports = find_cameras()
-    required_cameras = ['Front Cam', 'Left Cam', 'Right Cam']
+    required_cameras = ['Front Camera', 'Left Camera', 'Right Camera']
     launch_nodes = []
-
     for camera in required_cameras:
         if camera in camera_ports:
             node = Node(
@@ -66,6 +65,5 @@ def generate_launch_description():
         else:
             print(f"Error: {camera} not found. Ensure all cameras are connected.")
             sys.exit(1)
-
     return LaunchDescription(launch_nodes)
 
