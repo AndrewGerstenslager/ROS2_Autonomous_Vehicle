@@ -314,6 +314,7 @@ void initialize_kangaroo(){
    */
   
   setColor(ORANGE);
+  shouldBlink = false;
   //Setup Variables
   String d = "";
   String t = "";
@@ -332,7 +333,9 @@ void initialize_kangaroo(){
     Serial2.println("Waiting for Turn");
   }
   Serial.println(d);
+  Serial2.println("d,units 100cm = 2048 lines");
   Serial2.println("Drive Initialized");
+  
 
   //Initialize Turn Channel
   while(t.equals("")){
@@ -341,13 +344,14 @@ void initialize_kangaroo(){
     delay(1000);
   }
   Serial2.println(t);
+  Serial2.println("d,units 100cm = 2048 lines");
   Serial2.println("Turn Initialized");
 
   //Send These values to "wake up" motors
   //NOTE: idk why we need this but it won't take drive and turn
   //      commands until we send these
-  Serial1.println("t,s100");
-  Serial1.println("d,s100");
+  Serial1.println("t,s10");
+  Serial1.println("d,s10");
   Serial1.println("t,s0");
   Serial1.println("d,s0");
   
