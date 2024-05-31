@@ -182,10 +182,8 @@ void self_drive_control() {
   if (com_usb.charAt(0) == 'b') {
     self_drive_flag = true;
     shouldBlink = true;
-    if (currentStatus != "STATUS: SELF DRIVE ENABLED") {
-      currentStatus = "STATUS: SELF DRIVE ENABLED";
-      Serial2.println(currentStatus);
-    }
+    currentStatus = "STATUS: SELF DRIVE ENABLED";
+    Serial2.println(currentStatus);
     Serial2.println("DEBUG: BEGIN SELF DRIVE ENABLE");
   }
 
@@ -193,10 +191,8 @@ void self_drive_control() {
   else if (com_usb.charAt(0) == 'e') {
     self_drive_flag = false;
     shouldBlink = false;
-    if (currentStatus != "STATUS: SELF DRIVE DISABLED") {
-      currentStatus = "STATUS: SELF DRIVE DISABLED";
-      Serial2.println(currentStatus);
-    }
+    currentStatus = "STATUS: SELF DRIVE DISABLED";
+    Serial2.println(currentStatus);
     Serial1.println("d,s0");
     Serial1.println("t,s0");
     Serial2.println("DEBUG: END SELF DRIVE ENABLE");
@@ -339,7 +335,7 @@ void initialize_kangaroo() {
   }
 
   //Initialize Drive Channel
-  Serial2.println("DEBUG: WAITING FOR SABERTOOTH DRIVE COMMAND RESPONSE");
+  Serial2.println("DEBUG: INITIALIZING DRIVE CHANNEL");
   while (d.equals("")) {
     d = write_read("d,start\nd,getp");
     delay(100);
@@ -348,7 +344,7 @@ void initialize_kangaroo() {
   Serial2.println("DEBUG: DRIVE INITIALIZED");
 
   //Initialize Turn Channel
-  Serial2.println("DEBUG: WAITING FOR SABERTOOTH TURN COMMAND RESPONSE");
+  Serial2.println("DEBUG: INITIALIZING TURN CHANNEL");
   while (t.equals("")) {
     t = write_read("t,start\nt,getp");
     delay(100);
@@ -357,14 +353,16 @@ void initialize_kangaroo() {
   Serial2.println("DEBUG: TURN INITIALIZED");
 
   //Set units to 100cm to 2048 lines
-  //Wheel diameter is 100cm (1m) and encoder has a resolution of 2048/rev
-  Serial2.println("d,units 100cm = 2048 lines");
-  Serial2.println("d,units 100cm = 2048 lines");
-
+  Serial2.println("DEBUG: SETTING UNITS TO 100CM = 2048 LINES");
+  Serial1.println("d,units 100cm = 2048 lines");
+  Serial1.println("t,units 100cm = 2048 lines");
 }
 
 void calibrate_controller() {
   setColor(PURPLE);
+  currentStatus = "STATUS: CALIBRATING CONTROLLER";
+  Serial2.println(currentStatus);
+
   do {
     trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
   } while (trainer_toggle < 1600);
@@ -405,8 +403,8 @@ void calibrate_controller() {
 //_____________________SETUP________________________________________
 
 void setup() {
-  currentStatus = "STATUS: SETUP";
-  previousStatus = "";
+  currentStatus = "STATUS: SETUP - INITIALIZING";
+  Serial2.println(currentStatus);
 
   Timer1.initialize(1000000); // 1 second
   Timer1.attachInterrupt(handleInterrupt);
@@ -436,16 +434,20 @@ void setup() {
   Serial2.setTimeout(10);
   Serial1.setTimeout(10);
 
-  Serial2.println("DEBUG: INITIALIZE KANGAROO");
+  currentStatus = "STATUS: SETUP - INITIALIZING KANGAROO";
+  Serial2.println(currentStatus);
   initialize_kangaroo();
 
-  Serial2.println("DEBUG: INITIALIZE RC RECEIVER AND CONTROLLER");
+  currentStatus = "STATUS: SETUP - INITIALIZING RC RECEIVER AND CONTROLLER";
+  Serial2.println(currentStatus);
   wait_for_rc();
 
-  Serial2.println("DEBUG: CONTROLLER CALIBRATION STARTED");
+  currentStatus = "STATUS: SETUP - CALIBRATING CONTROLLER";
+  Serial2.println(currentStatus);
   calibrate_controller();
 
-  Serial2.println("DEBUG: READY");
+  currentStatus = "STATUS: READY";
+  Serial2.println(currentStatus);
 }
 
 //________________________LOOP_____________________________________
@@ -467,6 +469,12 @@ void loop() {
     rc_control();
   } 
   else if (trainer_toggle - prev_trainer_toggle > 1400) {
+    if (self_drive_flag) {
+      currentStatus = "STATUS: SELF DRIVE ENABLED";
+    } else {
+      currentStatus = "STATUS: SELF DRIVE DISABLED";
+    }
+    Serial2.println(currentStatus);
     self_drive_control();
   } 
   else if (trainer_toggle == 0) {
