@@ -68,12 +68,14 @@ void randColor(){
   }
 }
 
+
 void setColor(CRGB color){
   for (int i = 0; i <= NUM_LEDS; i++) {
     leds[i] = color;
   }
   FastLED.show();
 }
+
 
 void toggleLED(){
   static bool LEDState = HIGH;
@@ -97,12 +99,14 @@ void find_turn_range(){
     turn_max = turn_value;}
 }
 
+
 void find_drive_range(){
   if (drive_value < drive_min){
     drive_min = drive_value;}
   if (drive_value > drive_max){
     drive_max = drive_value;}
 }
+
 
 void find_speed_control_range(){
   if (speed_control_value < speed_control_min){
@@ -137,7 +141,7 @@ String write_read(String data, bool send_back = 0){
 
 //__________________DRIVE MODES_________________________________
 
-void self_drive_control(){
+void self_drive_control() {
   /*
    * This method is used to receive data over the serial port from the NUC
    * 
@@ -147,78 +151,89 @@ void self_drive_control(){
    */
   String com_usb;
 
-    setColor(GREEN);
-    
-  do{ com_usb = Serial2.readString();
-      trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
-      if (trainer_toggle < 1400 || trainer_toggle > 1600){
-        break;
-      }
-  }while(com_usb == "");
-  Serial2.println(com_usb);
-  Serial.println(com_usb);
-  
-  //if (com_usb != ""){
-    //Check to start or stop autonomous mode to 
-    //listen to commands from serial port
-    if(com_usb.charAt(0) == 'B'){
-      self_drive_flag = true;
-      shouldBlink = true;
-      Serial2.println("Self-Drive Started");
+  setColor(GREEN);
+
+  do {
+    com_usb = Serial2.readString();
+    trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
+    if (trainer_toggle < 1400 || trainer_toggle > 1600) {
+      break;
     }
-    else if(com_usb.charAt(0) == 'E'){
-      self_drive_flag = false;
-      shouldBlink = false;
-      Serial1.println("d,s0");
-      Serial2.println("d,s0");
-      Serial1.println("t,s0");
-      Serial.println("t,s0");
-      Serial2.println("STOPPED");
-      Serial2.println("Self-Drive Ended");
+  } while (com_usb == "");
+
+  // Check to start or stop autonomous mode to listen to commands from serial port
+
+  // b is begin self drive enable
+  if (com_usb.charAt(0) == 'b') {
+    self_drive_flag = true;
+    shouldBlink = true;
+    Serial2.println("DEBUG: BEGIN SELF DRIVE ENABLE");
+  }
+  
+  // e is end self drive enable
+  else if (com_usb.charAt(0) == 'e') {
+    self_drive_flag = false;
+    shouldBlink = false;
+    Serial1.println("d,s0");
+    Serial1.println("t,s0");
+    Serial2.println("DEBUG: END SELF DRIVE ENABLE");
+  }
+
+  // Only execute commands if self drive is started
+  else if (self_drive_flag) {
+    // Read and execute drive command
+    if (com_usb.charAt(0) == 'd') {
+      Serial1.println(com_usb);
+      Serial2.println("DEBUG: MOTOR COMMAND SENT WAS " + com_usb);
+    }
+    
+    // Read and execute turn command
+    else if (com_usb.charAt(0) == 't') {
+      Serial1.println(com_usb);
+      Serial2.println("DEBUG: MOTOR COMMAND SENT WAS " + com_usb);
     }
 
-    if(self_drive_flag){
-      
-      //read and execute command
-      if(com_usb.charAt(0) == 'd'){
-        //Drive Command
-        Serial1.println(com_usb);
-        Serial2.println(com_usb);
-        //write_read("d,gets", true);
-        //write_read("d,getp", true);
-      }
-      else if(com_usb.charAt(0) == 't' ){
-        //Turn Command
-        Serial1.println(com_usb);
-        Serial2.println(com_usb);
-        //send speed back back to NUC
-        //write_read("t,gets", true);
-        //write_read("t,getp", true);
-      }
-      else if(com_usb.charAt(0) == 'p'){
-        write_read("d,getp", true);
-        write_read("t,getp", true);
-        write_read("d,gets", true);
-        write_read("t,gets", true);
-      }
-      else if(com_usb.charAt(0) == 's'){
-        Serial1.println("d,s0");
-        Serial2.println("d,s0");
-        Serial1.println("t,s0");
-        Serial.println("t,s0");
-        Serial2.println("STOPPED");
-      }
-      else{
-        //Serial2.println("COMMAND NOT RECOGNIZED");
-      }
-    //}
+    // Get position
+    else if (com_usb.charAt(0) == 'p') {
+      String response_d_getp = write_read("d,getp", false);
+      String response_t_getp = write_read("t,getp", false);
+      String response_d_gets = write_read("d,gets", false);
+      String response_t_gets = write_read("t,gets", false);
+
+      // Trim responses
+      response_d_getp.trim();
+      response_t_getp.trim();
+      response_d_gets.trim();
+      response_t_gets.trim();
+
+      // Combine the responses into a single semicolon-separated string
+      String combined_response = response_d_getp + ";" + response_t_getp + ";" + response_d_gets + ";" + response_t_gets;
+
+      // Send the combined response back
+      Serial2.println(combined_response);
+    }
+
+    // Stop command without ending self drive enable
+    else if (com_usb.charAt(0) == 's') {
+      Serial1.println("d,s0");
+      Serial1.println("t,s0");
+      Serial2.println("DEBUG: STOPPED");
+    }
     
-    com_usb = "";//clear this variable
+    // Unrecognized command
+    else {
+      if (com_usb.length() > 0) {
+        Serial2.println("DEBUG: COMMAND NOT RECOGNIZED: " + com_usb);
+      }
+    }
   }
+  
+  com_usb = ""; // Clear this variable
 }
 
 
-void rc_control(){
+
+void rc_control() {
   /*
    * This method updates the drive_calculated and turn_calculated
    * values for us to access and write to the motors
@@ -226,82 +241,59 @@ void rc_control(){
    */
   String turn_setup = "t,s";
   String drive_setup = "d,s";
-  //int left_right_stick;
-  //int up_down_stick;
 
   setColor(BLUE);
   turn_direct = pulseIn(rc_pin_left_right, HIGH);
   drive_direct = pulseIn(rc_pin_up_down, HIGH);
   speed_control_direct = pulseIn(rc_pin_throttle, HIGH);
-  speed_control_value = (10000 / speed_control_range) * (speed_control_direct - speed_control_min) / 100;
-  turn_calculated = (((10000 / turn_range) * (turn_direct - turn_min) * speed_control_value / 100) - (50 * speed_control_value)) / (-4);
-  drive_calculated = (((10000 / drive_range) * (drive_direct - drive_min) * speed_control_value / 100) - (50 * speed_control_value)) / (-2); 
-  
-  //Serial2.println(left_right_stick);
-  //Serial2.println(up_down_stick);
 
-  //Turn Setup and Commands
-  if (turn_calculated < 300 && turn_calculated > -300){
-    turn_setup.concat(0);
-    Serial1.println(turn_setup);
-  }
-  else if (turn_calculated > 3000 || turn_calculated < -3000){
-  }
-  else{
+  // Calculate the speed control value as a percentage (0 to 100)
+  speed_control_value = map(speed_control_direct, speed_control_min, speed_control_max, 0, 100);
+
+  // Calculate the turn and drive values based on the throttle percentage and desired ranges
+  turn_calculated = map(turn_direct, turn_min, turn_max, 50, -50) * speed_control_value / 100;
+  drive_calculated = map(drive_direct, drive_min, drive_max, 150, -150) * speed_control_value / 100;
+
+  // Format and send turn command
+  if (abs(turn_calculated) >= 3000) {
+    // Ignore values out of range
+  } else {
     turn_setup.concat(turn_calculated);
     Serial1.println(turn_setup);
   }
 
-  //Drive Setup and Commands
-  if ( drive_calculated < 300 && drive_calculated > -300){
-    drive_setup.concat(0);
+  // Format and send drive command
+  if (abs(drive_calculated) >= 3000) {
+    // Ignore values out of range
+  } else {
+    drive_setup.concat(drive_calculated);
     Serial1.println(drive_setup);
   }
-  else if (drive_calculated > 3000 || drive_calculated < -3000){
-  }
-  else{
-  drive_setup.concat(drive_calculated);
-  Serial1.println(drive_setup);
-  }
-  
-  //Serial1.println(turn_setup);
-  //Serial1.println(drive_setup);
-
-  Serial2.print("Speed Control Direct: ");
-  Serial2.println(speed_control_direct);
-  Serial2.print("Speed Control Calculated: ");
-  Serial2.println(speed_control_value);
-
-  Serial2.print("Turn Direct: ");
-  Serial2.println(turn_direct);
-  Serial2.print("Turn Calculated: ");
-  Serial2.println(turn_setup);
-
-  Serial2.print("Drive Direct: ");
-  Serial2.println(turn_direct);
-  Serial2.print("Drive Calculated: ");
-  Serial2.println(drive_setup);
-
-
 }
-
 
 //______________________SETUP HARDWARE CODE______________________
 void wait_for_rc(){
+  //Stop motors just in case
   Serial1.println("t,s0");
   Serial1.println("d,s0");
-    setColor(YELLOW);
-    digitalWrite(rc_pin_power, LOW);
-    delay(500);
-    digitalWrite(rc_pin_power, HIGH);
+  
+  setColor(YELLOW);
+  //Turn on rc receiver
+  digitalWrite(rc_pin_power, LOW);
+  delay(500);
+  digitalWrite(rc_pin_power, HIGH);
+  trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
+  //wait for rc receiver to bind to the controller
+  while (trainer_toggle == 0){
     trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
-    while (trainer_toggle < 100){
-      trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
-      Serial2.println(trainer_toggle);
+    
+    //additional check if kangaroo turns off in this loop
+    kangaroo_on = digitalRead(KANGAROO_POWER);
+    if(kangaroo_on == false){
+      setup();
     }
+  }
 }
-
-
 
 
 void initialize_kangaroo(){
@@ -320,42 +312,47 @@ void initialize_kangaroo(){
   String t = "";
 
   //Check Power To Kangaroo Motion Controller
+  Serial2.println("DEBUG: WAITING FOR KANGAROO TO POWER ON");
   kangaroo_on = digitalRead(KANGAROO_POWER);
   while(kangaroo_on == false){
     kangaroo_on = digitalRead(KANGAROO_POWER); 
-    Serial2.println(kangaroo_on); 
   }
   
   //Initialize Drive Channel
+  Serial2.println("DEBUG: WAITING FOR SABERTOOTH DRIVE COMMAND RESPONSE");
   while(d.equals("")){
     d = write_read("d,start\nd,getp");
-    delay(1000);
-    Serial2.println("Waiting for Turn");
+    delay(100);
   }
-  Serial.println(d);
-  Serial2.println("d,units 100cm = 2048 lines");
-  Serial2.println("Drive Initialized");
+  Serial.println("DEBUG: RESPONSE FROM KANGAROO WAS " + d);
+  Serial2.println("DEBUG: DRIVE INITIALIZED");
   
 
   //Initialize Turn Channel
+  Serial2.println("DEBUG: WAITING FOR SABERTOOTH TURN COMMAND RESPONSE");
   while(t.equals("")){
-    Serial2.println("Waiting for Drive");
     t = write_read("t,start\nt,getp");
-    delay(1000);
+    delay(100);
   }
-  Serial2.println(t);
-  Serial2.println("d,units 100cm = 2048 lines");
-  Serial2.println("Turn Initialized");
+  Serial.println("DEBUG: RESPONSE FROM KANGAROO WAS " + t);
+  Serial2.println("DEBUG: TURN INITIALIZED");
 
+
+  //Set units to 100cm to 2048 lines
+  //Wheel diameter is 100cm (1m) and encoder has a resolution of 2048/rev
+  Serial2.println("d,units 100cm = 2048 lines");
+  Serial2.println("d,units 100cm = 2048 lines");
+  
   //Send These values to "wake up" motors
   //NOTE: idk why we need this but it won't take drive and turn
   //      commands until we send these
-  Serial1.println("t,s10");
-  Serial1.println("d,s10");
-  Serial1.println("t,s0");
-  Serial1.println("d,s0");
+  //Serial1.println("t,s10");
+  //Serial1.println("d,s10");
+  //Serial1.println("t,s0");
+  //Serial1.println("d,s0");
   
 }
+
 
 void calibrate_controller(){
   setColor(PURPLE);
@@ -388,47 +385,12 @@ void calibrate_controller(){
   drive_range = drive_max - drive_min;
   speed_control_range = speed_control_max - speed_control_min;
   
-  Serial2.print("Turn Range: ");
-  Serial2.print(turn_min);
-  Serial2.print(" - ");
-  Serial2.println(turn_max);
-  Serial2.print("Range = ");
-  Serial2.println(turn_range);
-
-  Serial2.print("Drive Range: ");
-  Serial2.print(drive_min);
-  Serial2.print(" - ");
-  Serial2.println(drive_max);
-  Serial2.print("Range = ");
-  Serial2.println(drive_range);
-
-  Serial2.print("Speed Control Range: ");
-  Serial2.print(speed_control_min);
-  Serial2.print(" - ");
-  Serial2.println(speed_control_max);
-  Serial2.print("Range = ");
-  Serial2.println(speed_control_range);
-
-  Serial.print("Turn Range: ");
-  Serial.print(turn_min);
-  Serial.print(" - ");
-  Serial.println(turn_max);
-  Serial.print("Range = ");
-  Serial.println(turn_range);
-
-  Serial.print("Drive Range: ");
-  Serial.print(drive_min);
-  Serial.print(" - ");
-  Serial.println(drive_max);
-  Serial.print("Range = ");
-  Serial.println(drive_range);
-
-  Serial.print("Speed Control Range: ");
-  Serial.print(speed_control_min);
-  Serial.print(" - ");
-  Serial.println(speed_control_max);
-  Serial.print("Range = ");
-  Serial.println(speed_control_range);
+  Serial2.println("Turn Range: " + String(turn_min) + " - " + String(turn_max));
+  Serial2.println("Range = " + String(turn_range));
+  Serial2.println("Drive Range: " + String(drive_min) + " - " + String(drive_max));
+  Serial2.println("Range = " + String(drive_range));
+  Serial2.println("Speed Control Range: " + String(speed_control_min) + " - " + String(speed_control_max));
+  Serial2.println("Range = " + String(speed_control_range));
 }
 
 
@@ -457,6 +419,10 @@ void setup() {
   Serial2.begin(9600);
   Serial1.begin(9600);
   Serial.begin(9600);
+  
+  //Stop motors just in case
+  Serial1.println("t,s0");
+  Serial1.println("d,s0");
 
   //Set timeout - important because readString() will wait until 10ms of data is read in
   //default value is 1000ms (1 sec) and is really slow otherwise
@@ -497,7 +463,7 @@ void loop() {
     //Serial2.println("SELF DRIVING MODE");
   }
   else if(trainer_toggle == 0){
-    wait_for_rc();
+    setup();
   }
   else{
     self_drive_flag = false;
