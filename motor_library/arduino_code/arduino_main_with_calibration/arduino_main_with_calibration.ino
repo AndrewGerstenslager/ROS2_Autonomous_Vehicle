@@ -182,6 +182,10 @@ void self_drive_control() {
   if (com_usb.charAt(0) == 'b') {
     self_drive_flag = true;
     shouldBlink = true;
+    if (currentStatus != "STATUS: SELF DRIVE ENABLED") {
+      currentStatus = "STATUS: SELF DRIVE ENABLED";
+      Serial2.println(currentStatus);
+    }
     Serial2.println("DEBUG: BEGIN SELF DRIVE ENABLE");
   }
 
@@ -189,6 +193,10 @@ void self_drive_control() {
   else if (com_usb.charAt(0) == 'e') {
     self_drive_flag = false;
     shouldBlink = false;
+    if (currentStatus != "STATUS: SELF DRIVE DISABLED") {
+      currentStatus = "STATUS: SELF DRIVE DISABLED";
+      Serial2.println(currentStatus);
+    }
     Serial1.println("d,s0");
     Serial1.println("t,s0");
     Serial2.println("DEBUG: END SELF DRIVE ENABLE");
@@ -459,10 +467,6 @@ void loop() {
     rc_control();
   } 
   else if (trainer_toggle - prev_trainer_toggle > 1400) {
-    if (currentStatus != "STATUS: SELF DRIVE") {
-      currentStatus = "STATUS: SELF DRIVE";
-      Serial2.println(currentStatus);
-    }
     self_drive_control();
   } 
   else if (trainer_toggle == 0) {
