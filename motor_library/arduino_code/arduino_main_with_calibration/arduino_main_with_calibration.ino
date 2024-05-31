@@ -1,14 +1,12 @@
-//TODO: 3. report encoder data back to the Serial2 port for odom messages
-
-
 #include <FastLED.h>
 #include <TimerOne.h>
+
 #define rc_pin_left_right       3         //BLUE WIRE Horizontal right stick
-#define rc_pin_up_down          4            //GREEN WIRE Vertical right stick
-#define rc_pin_trainer_toggle   6     //ORANGE WIRE 
+#define rc_pin_up_down          4         //GREEN WIRE Vertical right stick
+#define rc_pin_trainer_toggle   6         //ORANGE WIRE 
 #define rc_pin_right_left       5         //YELLOW WIRE Horizontal left stick. Not used
-#define rc_pin_throttle         2           //PURPLE WIRE Vertical left stick. Not used
-#define rc_pin_power           13             //Plugs into RC pwr
+#define rc_pin_throttle         2         //PURPLE WIRE Vertical left stick. Not used
+#define rc_pin_power           13         //Plugs into RC pwr
 #define LED_PIN                12
 #define NUM_LEDS               16
 #define KANGAROO_POWER         11
@@ -48,94 +46,110 @@ bool self_drive_flag = false;
 bool calibrated = false;
 bool kangaroo_on = true;
 
-const CRGB RED= CRGB (255, 0, 0);
-const CRGB BLUE= CRGB ( 0, 0, 255);
-const CRGB YELLOW= CRGB ( 255, 255, 0);
-const CRGB ORANGE= CRGB (255, 80, 0);
-const CRGB GREEN= CRGB ( 0, 255, 0);
-const CRGB PURPLE= CRGB ( 255, 0, 255);
-const CRGB TEAL= CRGB ( 0, 255, 255);
-const CRGB BLACK= CRGB ( 0, 0, 0);
+const CRGB RED = CRGB(255, 0, 0);
+const CRGB BLUE = CRGB(0, 0, 255);
+const CRGB YELLOW = CRGB(255, 255, 0);
+const CRGB ORANGE = CRGB(255, 80, 0);
+const CRGB GREEN = CRGB(0, 255, 0);
+const CRGB PURPLE = CRGB(255, 0, 255);
+const CRGB TEAL = CRGB(0, 255, 255);
+const CRGB BLACK = CRGB(0, 0, 0);
 
-//Reset Function
-void(*resetFunc)(void) = 0;
+// Reset Function
+void (*resetFunc)(void) = 0;
+
+String currentStatus = "STATUS: SETUP";
 
 //____________________LEDS_________________________________
 
-void randColor(){
+void randColor() {
   for (int i = 0; i <= NUM_LEDS; i++) {
     leds[i] = CRGB(random(0, 255), random(0, 255), random(0, 255));
   }
 }
 
-
-void setColor(CRGB color){
+void setColor(CRGB color) {
   for (int i = 0; i <= NUM_LEDS; i++) {
     leds[i] = color;
   }
   FastLED.show();
 }
 
+//__________________INTERRUPT METHODS______________________
 
-void toggleLED(){
-  static bool LEDState = HIGH;
-  if (shouldBlink){
+void handleInterrupt() {
+  static unsigned long lastStatusTime = 0;
+  static unsigned long lastLedToggleTime = 0;
+  unsigned long currentTime = millis();
+
+  // Send status every 1000ms
+  if (currentTime - lastStatusTime >= 1000) {
+    Serial2.println(currentStatus);
+    lastStatusTime = currentTime;
+  }
+
+  // Toggle LED every 500ms
+  if (shouldBlink && currentTime - lastLedToggleTime >= 500) {
+    static bool LEDState = HIGH;
     LEDState = !LEDState;
-    if (LEDState){
+    if (LEDState) {
       setColor(GREEN);
-    }
-    else{
+    } else {
       setColor(BLACK);
     }
+    lastLedToggleTime = currentTime;
   }
 }
 
 //__________________MATH FUNCTIONS__________________________
 
-void find_turn_range(){
-  if (turn_value < turn_min){
-    turn_min = turn_value;}
-  if (turn_value > turn_max){
-    turn_max = turn_value;}
+void find_turn_range() {
+  if (turn_value < turn_min) {
+    turn_min = turn_value;
+  }
+  if (turn_value > turn_max) {
+    turn_max = turn_value;
+  }
 }
 
-
-void find_drive_range(){
-  if (drive_value < drive_min){
-    drive_min = drive_value;}
-  if (drive_value > drive_max){
-    drive_max = drive_value;}
+void find_drive_range() {
+  if (drive_value < drive_min) {
+    drive_min = drive_value;
+  }
+  if (drive_value > drive_max) {
+    drive_max = drive_value;
+  }
 }
 
-
-void find_speed_control_range(){
-  if (speed_control_value < speed_control_min){
-    speed_control_min = speed_control_value;}
-  if (speed_control_value > speed_control_max){
-    speed_control_max = speed_control_value;}
+void find_speed_control_range() {
+  if (speed_control_value < speed_control_min) {
+    speed_control_min = speed_control_value;
+  }
+  if (speed_control_value > speed_control_max) {
+    speed_control_max = speed_control_value;
+  }
 }
-
 
 //________________SERIAL COMMUNICATION______________________
 
-String write_read(String data, bool send_back = 0){
+String write_read(String data, bool send_back = 0) {
   /*
    * This method is designed to send data to the kangaroo 
    * and return the appropriate response to the sender
    */
   Serial1.println(data);
-  
+
   //UNCOMMENT LINE BELOW TO SEE THE SENT MESSAGE
   //Serial2.println(s);
 
   //get response
   String response = Serial1.readString();
-  
+
   //Send response back to sender
-  if(send_back){
+  if (send_back) {
     Serial2.println(response);
   }
-  
+
   return response;
 }
 
@@ -169,7 +183,7 @@ void self_drive_control() {
     shouldBlink = true;
     Serial2.println("DEBUG: BEGIN SELF DRIVE ENABLE");
   }
-  
+
   // e is end self drive enable
   else if (com_usb.charAt(0) == 'e') {
     self_drive_flag = false;
@@ -186,7 +200,7 @@ void self_drive_control() {
       Serial1.println(com_usb);
       Serial2.println("DEBUG: MOTOR COMMAND SENT WAS " + com_usb);
     }
-    
+
     // Read and execute turn command
     else if (com_usb.charAt(0) == 't') {
       Serial1.println(com_usb);
@@ -219,7 +233,7 @@ void self_drive_control() {
       Serial1.println("t,s0");
       Serial2.println("DEBUG: STOPPED");
     }
-    
+
     // Unrecognized command
     else {
       if (com_usb.length() > 0) {
@@ -227,11 +241,9 @@ void self_drive_control() {
       }
     }
   }
-  
+
   com_usb = ""; // Clear this variable
 }
-
-
 
 void rc_control() {
   /*
@@ -272,11 +284,11 @@ void rc_control() {
 }
 
 //______________________SETUP HARDWARE CODE______________________
-void wait_for_rc(){
+void wait_for_rc() {
   //Stop motors just in case
   Serial1.println("t,s0");
   Serial1.println("d,s0");
-  
+
   setColor(YELLOW);
   //Turn on rc receiver
   digitalWrite(rc_pin_power, LOW);
@@ -284,19 +296,18 @@ void wait_for_rc(){
   digitalWrite(rc_pin_power, HIGH);
   trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
   //wait for rc receiver to bind to the controller
-  while (trainer_toggle == 0){
+  while (trainer_toggle == 0) {
     trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
-    
+
     //additional check if kangaroo turns off in this loop
     kangaroo_on = digitalRead(KANGAROO_POWER);
-    if(kangaroo_on == false){
+    if (kangaroo_on == false) {
       setup();
     }
   }
 }
 
-
-void initialize_kangaroo(){
+void initialize_kangaroo() {
   /*
    * This method is designed to establish a connection
    * to the kangaroo motor controller.
@@ -304,7 +315,7 @@ void initialize_kangaroo(){
    * We keep sending start for drive and turn channels
    * until we get an appropriate response
    */
-  
+
   setColor(ORANGE);
   shouldBlink = false;
   //Setup Variables
@@ -314,65 +325,54 @@ void initialize_kangaroo(){
   //Check Power To Kangaroo Motion Controller
   Serial2.println("DEBUG: WAITING FOR KANGAROO TO POWER ON");
   kangaroo_on = digitalRead(KANGAROO_POWER);
-  while(kangaroo_on == false){
-    kangaroo_on = digitalRead(KANGAROO_POWER); 
+  while (kangaroo_on == false) {
+    kangaroo_on = digitalRead(KANGAROO_POWER);
   }
-  
+
   //Initialize Drive Channel
   Serial2.println("DEBUG: WAITING FOR SABERTOOTH DRIVE COMMAND RESPONSE");
-  while(d.equals("")){
+  while (d.equals("")) {
     d = write_read("d,start\nd,getp");
     delay(100);
   }
   Serial.println("DEBUG: RESPONSE FROM KANGAROO WAS " + d);
   Serial2.println("DEBUG: DRIVE INITIALIZED");
-  
 
   //Initialize Turn Channel
   Serial2.println("DEBUG: WAITING FOR SABERTOOTH TURN COMMAND RESPONSE");
-  while(t.equals("")){
+  while (t.equals("")) {
     t = write_read("t,start\nt,getp");
     delay(100);
   }
   Serial.println("DEBUG: RESPONSE FROM KANGAROO WAS " + t);
   Serial2.println("DEBUG: TURN INITIALIZED");
 
-
   //Set units to 100cm to 2048 lines
   //Wheel diameter is 100cm (1m) and encoder has a resolution of 2048/rev
   Serial2.println("d,units 100cm = 2048 lines");
   Serial2.println("d,units 100cm = 2048 lines");
-  
-  //Send These values to "wake up" motors
-  //NOTE: idk why we need this but it won't take drive and turn
-  //      commands until we send these
-  //Serial1.println("t,s10");
-  //Serial1.println("d,s10");
-  //Serial1.println("t,s0");
-  //Serial1.println("d,s0");
-  
+
 }
 
-
-void calibrate_controller(){
+void calibrate_controller() {
   setColor(PURPLE);
-  do{
-    trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);  
-  }while(trainer_toggle < 1600);
+  do {
+    trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
+  } while (trainer_toggle < 1600);
 
   setColor(TEAL);
   turn_value = pulseIn(rc_pin_left_right, HIGH);
   drive_value = pulseIn(rc_pin_up_down, HIGH);
   speed_control_value = pulseIn(rc_pin_throttle, HIGH);
-  
+
   turn_min = turn_value;
   turn_max = turn_value;
   drive_min = drive_value;
   drive_max = drive_value;
   speed_control_min = speed_control_value;
-  speed_control_max = speed_control_value;  
-  
-  while(trainer_toggle > 1400){
+  speed_control_max = speed_control_value;
+
+  while (trainer_toggle > 1400) {
     turn_value = pulseIn(rc_pin_left_right, HIGH);
     drive_value = pulseIn(rc_pin_up_down, HIGH);
     speed_control_value = pulseIn(rc_pin_throttle, HIGH);
@@ -384,28 +384,25 @@ void calibrate_controller(){
   turn_range = turn_max - turn_min;
   drive_range = drive_max - drive_min;
   speed_control_range = speed_control_max - speed_control_min;
-  
-  Serial2.println("Turn Range: " + String(turn_min) + " - " + String(turn_max));
-  Serial2.println("Range = " + String(turn_range));
-  Serial2.println("Drive Range: " + String(drive_min) + " - " + String(drive_max));
-  Serial2.println("Range = " + String(drive_range));
-  Serial2.println("Speed Control Range: " + String(speed_control_min) + " - " + String(speed_control_max));
-  Serial2.println("Range = " + String(speed_control_range));
+
+  Serial2.println("DEBUG: Turn Range: " + String(turn_min) + " - " + String(turn_max));
+  Serial2.println("DEBUG: Range = " + String(turn_range));
+  Serial2.println("DEBUG: Drive Range: " + String(drive_min) + " - " + String(drive_max));
+  Serial2.println("DEBUG: Range = " + String(drive_range));
+  Serial2.println("DEBUG: Speed Control Range: " + String(speed_control_min) + " - " + String(speed_control_max));
+  Serial2.println("DEBUG: Range = " + String(speed_control_range));
 }
 
-
 //_____________________SETUP________________________________________
+
 void setup() {
-  
-  //Reset Pin
-  //pinMode(RESET, OUTPUT);
-  //digitalWrite(RESET, HIGH);
-  
-  Timer1.initialize(500000);
-  Timer1.attachInterrupt(toggleLED);
-  
+  currentStatus = "STATUS: SETUP";
+
+  Timer1.initialize(1000000); // 1 second
+  Timer1.attachInterrupt(handleInterrupt);
+
   FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
-  
+
   //Setup controller inputs
   pinMode(rc_pin_left_right, INPUT);
   pinMode(rc_pin_up_down, INPUT);
@@ -414,12 +411,12 @@ void setup() {
   pinMode(KANGAROO_POWER, INPUT);
   digitalWrite(rc_pin_power, HIGH);
   trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
-  
+
   //Begin Serial ports
   Serial2.begin(9600);
   Serial1.begin(9600);
   Serial.begin(9600);
-  
+
   //Stop motors just in case
   Serial1.println("t,s0");
   Serial1.println("d,s0");
@@ -429,53 +426,46 @@ void setup() {
   Serial2.setTimeout(10);
   Serial1.setTimeout(10);
 
-  Serial2.println("Initializing Kangaroo");
+  Serial2.println("DEBUG: INITIALIZE KANGAROO");
   initialize_kangaroo();
 
-  Serial2.println("Waiting For RC");
+  Serial2.println("DEBUG: INITIALIZE RC RECEIVER AND CONTROLLER");
   wait_for_rc();
 
-  Serial2.println("Begin Controller Calibration");
+  Serial2.println("DEBUG: CONTROLLER CALIBRATION STARTED");
   calibrate_controller();
-  
-  //KEEP THIS LINE IN
-  Serial2.println("Ready");
-}
 
+  Serial2.println("DEBUG: READY");
+}
 
 //________________________LOOP_____________________________________
 void loop() {
   trainer_toggle = pulseIn(rc_pin_trainer_toggle, HIGH);
-  
+
   kangaroo_on = digitalRead(KANGAROO_POWER);
-  if (kangaroo_on == false){
+  if (kangaroo_on == false) {
     resetFunc();
   }
-  
-  if(trainer_toggle - prev_trainer_toggle > 1600){
+
+  if (trainer_toggle - prev_trainer_toggle > 1600) {
     self_drive_flag = false;
     shouldBlink = false;
+    currentStatus = "STATUS: RC";
     rc_control();
-    //Serial2.println("RC MODE");
-  }
-  else if(trainer_toggle - prev_trainer_toggle > 1400){
+  } 
+  else if (trainer_toggle - prev_trainer_toggle > 1400) {
+    currentStatus = "STATUS: SELF DRIVE";
     self_drive_control();
-    //Serial2.println("SELF DRIVING MODE");
-  }
-  else if(trainer_toggle == 0){
+  } 
+  else if (trainer_toggle == 0) {
     setup();
-  }
-  else{
+  } 
+  else {
     self_drive_flag = false;
     shouldBlink = false;
     setColor(RED);
     Serial1.println("d,s0");
     Serial1.println("t,s0");
-    //Serial2.println("STOPPED");
-  }  
-  //write_read("d,getp", true);
-  //delay(20);
-  //write_read("t,getp", true);
-  //delay(20);
-  
+    currentStatus = "STATUS: STOPPED";
+  }
 }
