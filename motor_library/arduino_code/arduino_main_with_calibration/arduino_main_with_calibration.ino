@@ -59,6 +59,7 @@ const CRGB BLACK = CRGB(0, 0, 0);
 void (*resetFunc)(void) = 0;
 
 String currentStatus = "STATUS: SETUP";
+String previousStatus = "";
 
 //____________________LEDS_________________________________
 
@@ -397,6 +398,7 @@ void calibrate_controller() {
 
 void setup() {
   currentStatus = "STATUS: SETUP";
+  previousStatus = "";
 
   Timer1.initialize(1000000); // 1 second
   Timer1.attachInterrupt(handleInterrupt);
@@ -450,11 +452,17 @@ void loop() {
   if (trainer_toggle - prev_trainer_toggle > 1600) {
     self_drive_flag = false;
     shouldBlink = false;
-    currentStatus = "STATUS: RC";
+    if (currentStatus != "STATUS: RC") {
+      currentStatus = "STATUS: RC";
+      Serial2.println(currentStatus);
+    }
     rc_control();
   } 
   else if (trainer_toggle - prev_trainer_toggle > 1400) {
-    currentStatus = "STATUS: SELF DRIVE";
+    if (currentStatus != "STATUS: SELF DRIVE") {
+      currentStatus = "STATUS: SELF DRIVE";
+      Serial2.println(currentStatus);
+    }
     self_drive_control();
   } 
   else if (trainer_toggle == 0) {
@@ -463,9 +471,12 @@ void loop() {
   else {
     self_drive_flag = false;
     shouldBlink = false;
+    if (currentStatus != "STATUS: STOPPED") {
+      currentStatus = "STATUS: STOPPED";
+      Serial2.println(currentStatus);
+    }
     setColor(RED);
     Serial1.println("d,s0");
     Serial1.println("t,s0");
-    currentStatus = "STATUS: STOPPED";
   }
 }
