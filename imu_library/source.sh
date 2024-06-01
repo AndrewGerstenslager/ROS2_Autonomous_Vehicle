@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # CHANGE LINE BELOW FOR UPDATING THE PACKAGE NAME
-export PACKAGE_NAME='sparkfun_imu_node'
+export PACKAGE_NAME='my_imu_package'
 # ADD LINE BELOW TO DEFINE THE PACKAGE TYPE
 export PACKAGE_TYPE='python' # 'cpp' or 'python' depending on your package
 
@@ -38,7 +38,7 @@ fi
 print_blue "LAUNCH FILES:"
 LAUNCH_DIR="src/${PACKAGE_NAME}/launch" # Default path for C++ packages
 if [ "${PACKAGE_TYPE}" = "python" ]; then
-    LAUNCH_DIR="launch" # Adjust path for Python packages if necessary
+    LAUNCH_DIR="src/${PACKAGE_NAME}/launch" # Adjust path for Python packages if necessary
 fi
 
 if [ -z "$(ls -A ${LAUNCH_DIR} 2>/dev/null)" ]; then
