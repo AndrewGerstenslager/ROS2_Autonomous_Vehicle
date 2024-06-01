@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'imu_serial_node = my_imu_package.imu_serial_node:main',
+            'imu_odom_node = my_imu_package.odom_imu:main',
         ],
     },
 )
