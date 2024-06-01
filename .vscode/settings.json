@@ -3,7 +3,7 @@
         "DOKALMAN",
         "dokalman",
     ],
-    "cmake.sourceDirectory": "/home/ubuntu/repo/dokalman/dokalman_library/src/dokalman",
+    "cmake.sourceDirectory": "/home/ubuntu/Documents/GitLabClonedRepositories/dokalman-3/articubot_dev_ws/src/articubot_one",
     "python.formatting.provider": "black",
     "ros.distro": "foxy"
 }
