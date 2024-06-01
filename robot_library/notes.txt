@@ -5,3 +5,11 @@ robot_library is our parameters and dokalman as the urdf body
 use . create_package.sh to build and locate library to the current terminal
 
 go to useful_commands.txt to see what to run (run all commands in the robot_library/ folder in the terminal)
+
+libraries are held at /opt/ros/humble/share/{PACKAGE_NAME}
+
+
+mapper_params_online_async -> slam config
+nav2_params -> nav2 config
+    you can restart nav2 and slam without resetting rviz and gazebo but you gotta press the reset button 
+    in rviz on the bottom left corner of the window
