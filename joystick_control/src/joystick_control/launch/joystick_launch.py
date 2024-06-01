@@ -20,8 +20,8 @@ def generate_launch_description():
                 {'require_enable_button': True},  # Enable button requirement (optional)
                 {'axis_linear.x': 1},  # Assuming left stick X for linear (adjust based on your controller)
                 {'axis_linear.y': -1},  # Assuming left stick Y for linear (adjust based on your controller)
-                {'scale_linear.x': 0.5},  # Adjust linear velocity scaling
-                {'scale_linear.y': 0.5},  # Adjust linear velocity scaling
+                {'scale_linear.x': 1.0},  # Adjust linear velocity scaling
+                {'scale_linear.y': 1.0},  # Adjust linear velocity scaling
                 {'axis_angular.yaw': 0},  # Assuming right stick X for angular (adjust based on your controller)
                 {'scale_angular.yaw': 1.0},  # Adjust angular velocity scaling
             ]
