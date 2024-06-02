@@ -7,6 +7,7 @@
 #include <sstream>
 #include <filesystem>
 #include <ament_index_cpp/get_package_share_directory.hpp>
+#include <string>
 
 using namespace std;
 using namespace cv;
@@ -51,18 +52,12 @@ private:
   }
 
   cv::Mat nuke_cone(const cv::Mat& image, const cv::Scalar& lower_cone, const cv::Scalar& upper_cone,cv::Mat& debug_img) {
-        // Convert the image from BGR to HSV
-    cv::Mat hsv_image;
-    cv::cvtColor(image, hsv_image, cv::COLOR_BGR2HSV);
-
     // Threshold the image to get a binary mask
-    cv::Mat thresholded_image;
-    cv::inRange(hsv_image, lower_cone, upper_cone, thresholded_image);
-
+    cv::Mat thresholded_image=thresholdHSV(image,lower_cone,upper_cone);
     // Clone the original image to create the result
     cv::Mat result = image.clone();
 
-    debug_img=image.clone();
+    debug_img=result.clone();
 
     vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
@@ -70,18 +65,19 @@ private:
     Mat mask = Mat::zeros(thresholded_image.size(), thresholded_image.type());
     for (const auto &contour : contours) {
       double area = contourArea(contour);
-      if (area >= 50) {
+      if (area >= 20) {
         drawContours(mask, vector<vector<Point>>(1, contour), -1, Scalar(255), FILLED);
       }
     }
+
     // Process each column to replace pixels from the detected point and above with black
     for (int j = 0; j < result.cols; j++) {
         bool detected = false;
         for (int i = result.rows - 1; i >= 0; i--) {
             // If a pixel within the range is detected
-            if (mask.at<uchar>(i, j) >=125 ) {
+            if (mask.at<uchar>(i, j) >5 ) {
                 detected = true;
-                debug_img.at<cv::Vec3b>(i,j)=cv::Vec3b(0,0,0);
+                debug_img.at<cv::Vec3b>(i,j)=cv::Vec3b(0,255,0);
             }
             // If detected, set the pixel and all above pixels to black
             if (detected) {
@@ -116,36 +112,17 @@ private:
         if (std::filesystem::exists(filename)) {
             string a;
             file >> low_h >> low_s >> low_v >> high_h >> high_s >> high_v;
-            file>>a;
             file >> cone_low_h >> cone_low_s >> cone_low_v >> cone_high_h >> cone_high_s >> cone_high_v;
             file.close();
         }
         else{
-                writefile("/home/uc_jetson/repo/dokalman/vision_library/src/cpp_image_processing/calibration_data/calibrate_hsv.txt");
+                writefile(filename);
             }
     }
 
     void load_params()
     {
-        std::string package_share_directory = ament_index_cpp::get_package_share_directory("cpp_image_processing");
-
-        std::string calibration_data_file = package_share_directory + file_path;
-
-        // Check if file exists
-        if (!std::filesystem::exists(calibration_data_file)) {
-            //RCLCPP_ERROR(this->get_logger(), "File does not exist: %s", calibration_data_file.c_str());
-            return;
-        }
-        else{
-            //RCLCPP_INFO(this->get_logger(),"File Exists");
-        }
-
-        //RCLCPP_INFO(this->get_logger(), "Attempting to read from file: %s", calibration_data_file.c_str());
-
-        readfile("/home/uc_jetson/repo/dokalman/vision_library/src/cpp_image_processing/calibration_data/calibrate_hsv.txt");
-        
-        //writefile("/home/uc_jetson/repo/dokalman/vision_library/src/cpp_image_processing/calibration_data/test_hsv.txt");
-        
+      readfile("/dokalman/vision_library/src/cpp_image_processing/calibration_data/calibrate_hsv.txt");
     }
 
   void image_callback(const sensor_msgs::msg::Image::SharedPtr msg) {
@@ -170,7 +147,7 @@ private:
     cv::Scalar upper_bound(high_h, high_s, high_v); // Upper bound of HSV values
     cv::Scalar lower_cone(cone_low_h,cone_low_s,cone_low_v);
     cv::Scalar upper_cone(cone_high_h,cone_high_s,cone_high_v);
-
+    //RCLCPP_INFO(this->get_logger(), "cone_low_h: %d", cone_low_h);
     cv::Mat nuked_img=img.clone();
     cv::Mat debug_img;
     if (this->get_parameter("remove_orange").as_bool()){

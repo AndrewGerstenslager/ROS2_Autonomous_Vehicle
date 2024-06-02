@@ -4,14 +4,14 @@ import math
 
 def generate_launch_description():  
     nodes=[]  
-    nodes+=calibrate_camera('/left_camera/image_raw','left')
+    nodes+=calibrate_camera('/front_camera/image_raw','front')
     return LaunchDescription(
         nodes
     )
     
 def calibrate_camera(camera,name):
     cal_name=name+'_hsv_calibrated'
-    debug_name=cal_name+'debug'
+    debug_name=cal_name+'_debug'
     #glo_ipm='/home/uc_jetson/repo/dokalman/vision_library/src/cpp_image_processing/calibration_data/'+name+'_test_cal.txt'
     glo_ipm='/dokalman/vision_library/src/cpp_image_processing/calibration_data/'+name+'_test_cal.txt'
     
