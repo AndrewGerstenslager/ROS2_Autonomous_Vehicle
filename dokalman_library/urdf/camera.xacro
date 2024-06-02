@@ -7,7 +7,7 @@
     <joint name="right_camera_joint" type="fixed">
         <parent link="ChassisLink"/>
         <child link="right_camera_link"/>
-        <origin xyz="0.33 0.00 0.24" rpy="0 ${50*pi/180} ${-pi/2 + pi/2}"/>
+        <origin xyz="0.33 0.00 0.24" rpy="0 ${50*pi/180} ${-64*pi/180 + pi/2}"/>
     </joint>
 
     <link name="right_camera_link">
@@ -61,7 +61,7 @@
     <joint name="left_camera_joint" type="fixed">
         <parent link="ChassisLink"/>
         <child link="left_camera_link"/>
-        <origin xyz="-0.33 0.00 0.24" rpy="0 ${50*pi/180} ${pi/2 + pi/2}"/>
+        <origin xyz="-0.33 0.00 0.24" rpy="0 ${50*pi/180} ${64*pi/180+ pi/2}"/>
     </joint>
 
     <link name="left_camera_link">
