@@ -81,6 +81,7 @@ private:
             }
             row++;
         }
+        file.close();
         //printIPMMatrix();
     }
 

@@ -4,8 +4,8 @@ import math
 
 def generate_launch_description():  
     nodes=[]  
-    nodes+=calibrate_camera('/left_camera/image_raw','left')
-    nodes+=calibrate_camera('/right_camera/image_raw','right')
+    #nodes+=calibrate_camera('/left_camera/image_raw','left')
+    #nodes+=calibrate_camera('/right_camera/image_raw','right')
     nodes+=calibrate_camera('/front_camera/image_raw','front')
     return LaunchDescription(
         nodes

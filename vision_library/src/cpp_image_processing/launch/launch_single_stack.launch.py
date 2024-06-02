@@ -34,6 +34,7 @@ def process_image(camera,name,yaw,trans_x,trans_y):
     threshold_topic=name+'_img_processed'
     pcd_topic=name+'_pcd'
     ipm_path='/calibration_data/'+name+'_test_cal.txt'
+    debug_name=threshold_topic+'_debug'
     #Node(
     #    package='cpp_image_processing', 
     #    executable='live_feed', 
@@ -55,9 +56,10 @@ def process_image(camera,name,yaw,trans_x,trans_y):
             name='image_threshold',
             parameters=[{'subscribed_topic':skew_topic},
                         {'published_topic':threshold_topic},
-                        {"threshold_value":165},#[0,255] The higher the number the stricter the white color filter
-                        {"min_area":30}] 
-        )
+                        {'published_debug_topic':debug_name},
+                        {'min_area': 20},
+                        {'debug_mode': True},
+                        {'remove_orange': True}])
     pcd=Node(
             package='cpp_image_processing',
             executable='image_to_pointcloud',
